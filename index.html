@@ -213,16 +213,24 @@
       </div>
 
       <div class="border-t-2 py-2.5 px-4" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-        <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
-          <div class="theme-card border-2 rounded-2xl p-3 flex flex-col shadow-sm">
-            <span class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Total Comprado</span>
-            <span id="display-total" class="text-lg font-black mt-0.5">R$ 0,00</span>
+        <div class="max-w-md mx-auto space-y-2.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div class="theme-card border-2 rounded-2xl p-3 flex flex-col shadow-sm">
+              <span class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Total Comprado</span>
+              <span id="display-total" class="text-lg font-black mt-0.5">R$ 0,00</span>
+            </div>
+
+            <div id="card-saldo" class="theme-card border-2 rounded-2xl p-3 flex flex-col shadow-sm transition-colors">
+              <span class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Saldo Disponível</span>
+              <span id="display-balance" class="text-lg font-black theme-accent mt-0.5">Ilimitado</span>
+            </div>
           </div>
 
-          <div id="card-saldo" class="theme-card border-2 rounded-2xl p-3 flex flex-col shadow-sm transition-colors">
-            <span class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Saldo Disponível</span>
-            <span id="display-balance" class="text-lg font-black theme-accent mt-0.5">Ilimitado</span>
-          </div>
+          <!-- BOTÃO DE INSTALAÇÃO NATIVA (SÓ APARECE SE NÃO ESTIVER INSTALADO) -->
+          <button id="btn-install-app" class="hidden w-full theme-bg-accent text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs shadow-md transition-all active:scale-[0.98]">
+            <i data-lucide="download-cloud" class="w-4 h-4"></i>
+            <span>Instalar Aplicativo no Celular</span>
+          </button>
         </div>
       </div>
     </header>
@@ -409,7 +417,7 @@
     </div>
   </aside>
 
-  <!-- MODAL DE ALERTA DE SALDO (R$ 15 / R$ 5 / ESTOURO) -->
+  <!-- MODAL DE ALERTA DE SALDO -->
   <div id="budget-alert-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       <div id="alert-icon-box" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto shadow-md bg-amber-500/20 border-2 border-amber-500/40 text-amber-400">
@@ -419,9 +427,7 @@
         <h3 id="alert-title" class="text-lg font-bold">Atenção ao Saldo</h3>
         <p id="alert-message" class="theme-text-muted text-xs font-medium mt-1.5">Seu saldo está acabando.</p>
       </div>
-      <div id="alert-buttons" class="grid grid-cols-2 gap-3 pt-2">
-        <!-- Preenchido via JavaScript -->
-      </div>
+      <div id="alert-buttons" class="grid grid-cols-2 gap-3 pt-2"></div>
     </div>
   </div>
 
@@ -521,6 +527,28 @@
       localStorage.setItem('selected_theme', themeName);
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
+
+    // SETUP PWA & INSTALAÇÃO NATIVA INTELIGENTE
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Se não estiver em modo standalone (já instalado), mostra o botão de instalar no topo
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        document.getElementById('btn-install-app').classList.remove('hidden');
+      }
+    });
+
+    document.getElementById('btn-install-app')?.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('btn-install-app').classList.add('hidden');
+        }
+        deferredPrompt = null;
+      }
+    });
 
     function setupPWA() {
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
@@ -920,13 +948,10 @@
     });
 
     // SISTEMA DE VERIFICAÇÃO DE SALDO E ALERTAS PROGRESSIVOS
-    let alertModalState = null; // Guarda os dados do item pendente se houver alerta
-
     function checkBudgetAndAddItem(newItem) {
       if (appState.budget === null) {
-        // Sem teto definido, adiciona direto
         appState.items.push(newItem);
-        saveAndResetForm(newItem);
+        saveAndResetForm();
         return;
       }
 
@@ -935,7 +960,6 @@
       const saldoRestanteAntes = appState.budget - totalGasto;
       const saldoRestanteDepois = appState.budget - novoTotal;
 
-      // Se estourar o limite
       if (novoTotal > appState.budget) {
         showBudgetAlert(
           "Limite Estourado!",
@@ -943,7 +967,7 @@
           "Deixar Estourar",
           () => {
             appState.items.push(newItem);
-            saveAndResetForm(newItem);
+            saveAndResetForm();
             document.getElementById('budget-alert-modal').classList.add('hidden');
           },
           "Atualizar Teto",
@@ -956,7 +980,6 @@
         return;
       }
 
-      // Se entrar na faixa de R$ 5,00 restantes (e antes não estava ou estava acima)
       if (saldoRestanteDepois <= 5.00 && saldoRestanteAntes > 5.00) {
         showBudgetAlert(
           "Atenção Crítica!",
@@ -964,7 +987,7 @@
           "Sim, Continuar",
           () => {
             appState.items.push(newItem);
-            saveAndResetForm(newItem);
+            saveAndResetForm();
             document.getElementById('budget-alert-modal').classList.add('hidden');
           },
           "Atualizar Teto",
@@ -977,7 +1000,6 @@
         return;
       }
 
-      // Se entrar na faixa de R$ 15,00 restantes (e antes não estava ou estava acima)
       if (saldoRestanteDepois <= 15.00 && saldoRestanteAntes > 15.00) {
         showBudgetAlert(
           "Aviso de Saldo Baixo",
@@ -985,7 +1007,7 @@
           "Sim, Continuar",
           () => {
             appState.items.push(newItem);
-            saveAndResetForm(newItem);
+            saveAndResetForm();
             document.getElementById('budget-alert-modal').classList.add('hidden');
           },
           "Atualizar Teto",
@@ -998,9 +1020,8 @@
         return;
       }
 
-      // Caso normal sem alertas
       appState.items.push(newItem);
-      saveAndResetForm(newItem);
+      saveAndResetForm();
     }
 
     function showBudgetAlert(title, message, btnTextPrimary, onPrimary, btnTextSecondary, onSecondary, iconStyleClass) {
@@ -1022,7 +1043,7 @@
       document.getElementById('budget-alert-modal').classList.remove('hidden');
     }
 
-    function saveAndResetForm(newItem) {
+    function saveAndResetForm() {
       document.getElementById('item-name').value = '';
       document.getElementById('item-price').value = '';
       document.getElementById('item-qty').value = '1';
@@ -1078,7 +1099,6 @@
     document.getElementById('btn-close-drawer').addEventListener('click', closeDrawer);
     backdrop.addEventListener('click', closeDrawer);
 
-    // MODAL DE EDITAR LIMITE
     const budgetModal = document.getElementById('budget-modal');
     function openBudgetModal() {
       document.getElementById('budget-input').value = appState.budget !== null ? appState.budget : '';
