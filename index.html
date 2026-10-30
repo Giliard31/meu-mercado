@@ -144,6 +144,7 @@
         <p class="theme-text-muted text-sm mt-1" id="auth-subtitle">Entre com sua conta para sincronizar</p>
       </div>
 
+      <!-- FORMULÁRIO DE LOGIN E CADASTRO -->
       <div id="auth-forms-container">
         <div class="grid grid-cols-2 gap-2 p-1.5 rounded-xl mb-5 border-2" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
           <button id="tab-login" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
@@ -181,8 +182,8 @@
           <h3 class="text-lg font-bold">Aguardando Aprovação</h3>
           <p class="theme-text-muted text-xs mt-1">Sua conta foi cadastrada, mas precisa ser aprovada pelo Administrador para liberar o acesso ao mercado.</p>
         </div>
-        <button id="btn-logout-pending" class="w-full border-2 text-xs font-bold py-3 rounded-xl transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-          Sair e tentar outro e-mail
+        <button id="btn-logout-pending" type="button" class="w-full border-2 text-xs font-bold py-3.5 rounded-xl transition-all active:scale-95 theme-accent" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+          <i data-lucide="arrow-left" class="w-4 h-4 inline mr-1"></i> Sair e tentar outro e-mail
         </button>
       </div>
 
@@ -357,14 +358,14 @@
 
     <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
       
-      <!-- PAINEL ADMIN -->
+      <!-- PAINEL ADMIN DE APROVAÇÃO COM CHECKBOX E EXCLUSÃO -->
       <div id="admin-panel" class="hidden border-2 rounded-2xl p-3.5 theme-card shadow-sm space-y-3">
         <div class="flex items-center gap-2">
           <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
           <h4 class="text-xs font-bold uppercase tracking-wider text-amber-500">Painel do Administrador</h4>
         </div>
-        <p class="text-[11px] theme-text-muted">Gerencie quem tem permissão para entrar na sua conta:</p>
-        <div id="pending-users-list" class="space-y-2"></div>
+        <p class="text-[11px] theme-text-muted">Marque a caixinha para liberar o usuário ou use a lixeira para excluir:</p>
+        <div id="users-admin-list" class="space-y-2"></div>
       </div>
 
       <div>
@@ -415,11 +416,30 @@
 
     <div class="p-4 border-t-2 flex items-center justify-between" style="border-color: var(--bg-card-border);">
       <span class="text-xs font-semibold theme-text-muted">Meu Mercado 2.0</span>
-      <button id="btn-logout" class="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1.5">
+      <button id="btn-logout" class="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1.5 active:scale-95 transition-transform p-1">
         <i data-lucide="log-out" class="w-4 h-4"></i> Sair da Conta
       </button>
     </div>
   </aside>
+
+  <!-- MODAL DEFINIR LIMITE (SUBSTITUI O PROMPT/ALERT NATIVO) -->
+  <div id="budget-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-4">
+      <div class="flex items-center gap-2.5 pb-2 border-b-2" style="border-color: var(--bg-card-border);">
+        <i data-lucide="calculator" class="w-5 h-5 theme-accent"></i>
+        <h3 class="font-bold text-base">Limite de Compras</h3>
+      </div>
+      <div>
+        <label class="block text-xs font-bold theme-text-muted uppercase tracking-wider mb-2">Digite o valor máximo (R$)</label>
+        <input type="number" id="budget-input" step="0.01" min="0" placeholder="0,00" 
+          class="w-full border-2 rounded-xl px-4 py-3 text-lg font-black focus:outline-none theme-border-accent" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button id="btn-cancel-budget" class="border-2 text-xs font-bold py-3 rounded-xl transition-colors shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">Cancelar</button>
+        <button id="btn-save-budget" class="theme-bg-accent text-white text-xs font-bold py-3 rounded-xl shadow-lg transition-colors">Salvar Limite</button>
+      </div>
+    </div>
+  </div>
 
   <!-- MODAL DETALHES HISTÓRICO -->
   <div id="history-detail-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
@@ -589,8 +609,25 @@
       }
     });
 
-    document.getElementById('btn-logout').addEventListener('click', () => auth.signOut());
-    document.getElementById('btn-logout-pending').addEventListener('click', () => auth.signOut());
+    async function performLogout() {
+      try {
+        closeDrawer();
+        await auth.signOut();
+      } catch (err) {
+        console.error("Erro ao sair:", err);
+      } finally {
+        document.getElementById('pending-approval-box').classList.add('hidden');
+        document.getElementById('auth-forms-container').classList.remove('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        document.getElementById('main-app').classList.add('hidden');
+        document.getElementById('auth-email').value = '';
+        document.getElementById('auth-password').value = '';
+        tabLogin.click();
+      }
+    }
+
+    document.getElementById('btn-logout').addEventListener('click', performLogout);
+    document.getElementById('btn-logout-pending').addEventListener('click', performLogout);
 
     auth.onAuthStateChanged(async (user) => {
       if (unsubscribeSync) { unsubscribeSync(); unsubscribeSync = null; }
@@ -634,33 +671,50 @@
         initFirebaseSync(user.uid);
         initChatSync();
       } else {
+        document.getElementById('pending-approval-box').classList.add('hidden');
+        document.getElementById('auth-forms-container').classList.remove('hidden');
         document.getElementById('auth-screen').classList.remove('hidden');
         document.getElementById('main-app').classList.add('hidden');
       }
     });
 
+    // LISTAR USUÁRIOS NA GAVETA DO ADMIN COM CHECKBOX E EXCLUSÃO
     function initAdminListener() {
-      unsubscribeAdmin = db.collection("aprovacoes").where("approved", "==", false).onSnapshot((snapshot) => {
-        const listEl = document.getElementById('pending-users-list');
-        const pendings = [];
-        snapshot.forEach(doc => pendings.push({ id: doc.id, ...doc.data() }));
+      unsubscribeAdmin = db.collection("aprovacoes").onSnapshot((snapshot) => {
+        const listEl = document.getElementById('users-admin-list');
+        const users = [];
+        snapshot.forEach(doc => {
+          if (doc.data().email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+            users.push({ id: doc.id, ...doc.data() });
+          }
+        });
         
-        if (pendings.length === 0) {
-          listEl.innerHTML = `<p class="text-[10px] theme-text-muted italic">Nenhuma solicitação pendente.</p>`;
+        if (users.length === 0) {
+          listEl.innerHTML = `<p class="text-[10px] theme-text-muted italic">Nenhum usuário cadastrado.</p>`;
           return;
         }
 
-        listEl.innerHTML = pendings.map(p => `
-          <div class="flex items-center justify-between bg-black/20 p-2 rounded-xl text-xs">
-            <span class="truncate pr-2">${p.email}</span>
-            <button onclick="approveUser('${p.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-bold shrink-0">Aprovar</button>
+        listEl.innerHTML = users.map(u => `
+          <div class="flex items-center justify-between bg-black/20 p-2.5 rounded-xl text-xs border" style="border-color: var(--bg-card-border);">
+            <label class="flex items-center gap-2 cursor-pointer truncate pr-2">
+              <input type="checkbox" ${u.approved ? 'checked' : ''} onchange="toggleUserApproval('${u.id}', this.checked)" class="w-4 h-4 rounded accent-emerald-500 cursor-pointer">
+              <span class="truncate font-semibold ${u.approved ? 'text-emerald-400' : 'theme-text-muted'}">${u.email.split('@')[0]}</span>
+            </label>
+            <button onclick="deleteUserAccount('${u.id}')" class="text-rose-400 hover:text-rose-500 p-1.5 rounded-lg shrink-0" title="Excluir Usuário">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
           </div>
         `).join('');
+        lucide.createIcons();
       });
     }
 
-    window.approveUser = async function(uid) {
-      await db.collection("aprovacoes").doc(uid).update({ approved: true });
+    window.toggleUserApproval = async function(uid, isChecked) {
+      await db.collection("aprovacoes").doc(uid).update({ approved: isChecked });
+    };
+
+    window.deleteUserAccount = async function(uid) {
+      await db.collection("aprovacoes").doc(uid).delete();
     };
 
     function initFirebaseSync(uid) {
@@ -935,15 +989,23 @@
     document.getElementById('btn-close-drawer').addEventListener('click', closeDrawer);
     backdrop.addEventListener('click', closeDrawer);
 
+    // MODAL DE EDITAR LIMITE NATIVO (SEM PROMPT DO NAVEGADOR)
+    const budgetModal = document.getElementById('budget-modal');
     document.getElementById('btn-edit-budget').addEventListener('click', () => {
       closeDrawer();
-      const current = appState.budget !== null ? appState.budget : '';
-      const newVal = prompt("Digite o limite total de compras (R$):", current);
-      if (newVal !== null) {
-        const parsed = parseFloat(newVal.replace(',', '.'));
-        appState.budget = !isNaN(parsed) && parsed > 0 ? parsed : null;
-        saveToFirestore();
-      }
+      document.getElementById('budget-input').value = appState.budget !== null ? appState.budget : '';
+      budgetModal.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-cancel-budget').addEventListener('click', () => {
+      budgetModal.classList.add('hidden');
+    });
+
+    document.getElementById('btn-save-budget').addEventListener('click', () => {
+      const val = parseFloat(document.getElementById('budget-input').value);
+      appState.budget = !isNaN(val) && val > 0 ? val : null;
+      saveToFirestore();
+      budgetModal.classList.add('hidden');
     });
 
     document.getElementById('btn-finish-shopping').addEventListener('click', () => {
