@@ -44,48 +44,71 @@
   <link rel="manifest" id="manifest-placeholder">
 
   <style>
+    /* DEFINIÇÃO COMPLETA DE TEMAS (Muda Fundo, Cards e Acentos) */
     :root[data-theme="emerald"] {
+      --bg-page: #020617;
+      --bg-card: #0f172a;
+      --bg-card-border: #1e293b;
       --brand-main: #10b981;
       --brand-hover: #059669;
       --brand-light: #34d399;
-      --brand-bg: rgba(16, 185, 129, 0.1);
-      --brand-border: rgba(16, 185, 129, 0.3);
+      --brand-bg: rgba(16, 185, 129, 0.15);
+      --brand-border: rgba(16, 185, 129, 0.35);
     }
     :root[data-theme="cyberpunk"] {
+      --bg-page: #031420;
+      --bg-card: #082f49;
+      --bg-card-border: #0c4a6e;
       --brand-main: #06b6d4;
       --brand-hover: #0891b2;
       --brand-light: #22d3ee;
-      --brand-bg: rgba(6, 182, 212, 0.1);
-      --brand-border: rgba(6, 182, 212, 0.3);
+      --brand-bg: rgba(6, 182, 212, 0.15);
+      --brand-border: rgba(6, 182, 212, 0.35);
     }
     :root[data-theme="purple"] {
+      --bg-page: #10051d;
+      --bg-card: #2e1065;
+      --bg-card-border: #3b0764;
       --brand-main: #a855f7;
       --brand-hover: #9333ea;
       --brand-light: #c084fc;
-      --brand-bg: rgba(168, 85, 247, 0.1);
-      --brand-border: rgba(168, 85, 247, 0.3);
+      --brand-bg: rgba(168, 85, 247, 0.15);
+      --brand-border: rgba(168, 85, 247, 0.35);
     }
     :root[data-theme="orange"] {
+      --bg-page: #180800;
+      --bg-card: #431407;
+      --bg-card-border: #7c2d12;
       --brand-main: #f97316;
       --brand-hover: #ea580c;
       --brand-light: #fb923c;
-      --brand-bg: rgba(249, 115, 22, 0.1);
-      --brand-border: rgba(249, 115, 22, 0.3);
+      --brand-bg: rgba(249, 115, 22, 0.15);
+      --brand-border: rgba(249, 115, 22, 0.35);
     }
 
+    /* APLICAÇÃO DAS CORES DINÂMICAS DE FUNDO */
     body {
+      background-color: var(--bg-page);
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      transition: background-color 0.3s ease;
     }
+
+    .theme-card {
+      background-color: var(--bg-card);
+      border-color: var(--bg-card-border);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
     ::-webkit-scrollbar {
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0f172a;
+      background: var(--bg-page);
     }
     ::-webkit-scrollbar-thumb {
-      background: #334155;
+      background: var(--bg-card-border);
       border-radius: 4px;
     }
     .theme-accent { color: var(--brand-main); }
@@ -93,13 +116,13 @@
     .theme-border-accent { border-color: var(--brand-main); }
   </style>
 </head>
-<body data-theme="emerald" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-hidden">
+<body data-theme="emerald" class="text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-x-hidden">
 
   <!-- ================================================================= -->
-  <!-- TELA DE AUTENTICAÇÃO OBRIGATÓRIA (TELA INICIAL)                   -->
+  <!-- TELA DE AUTENTICAÇÃO (LOGIN / CADASTRO)                           -->
   <!-- ================================================================= -->
-  <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: var(--bg-page);">
+    <div class="theme-card border w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
       
       <div class="flex flex-col items-center text-center mb-6">
         <div class="w-16 h-16 rounded-2xl flex items-center justify-center theme-accent mb-3 shadow-lg" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
@@ -110,7 +133,7 @@
       </div>
 
       <!-- Abas: Entrar x Cadastrar -->
-      <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl mb-5 border border-slate-800">
+      <div class="grid grid-cols-2 gap-2 p-1 rounded-xl mb-5 border" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
         <button id="tab-login" type="button" class="py-2.5 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
         <button id="tab-register" type="button" class="py-2.5 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white">Criar Conta</button>
       </div>
@@ -119,13 +142,13 @@
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">E-mail</label>
           <input type="email" id="auth-email" required placeholder="seu@email.com" 
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none theme-border-accent transition-colors">
+            class="w-full border rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Senha</label>
           <input type="password" id="auth-password" required placeholder="••••••••" 
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none theme-border-accent transition-colors">
+            class="w-full border rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
         </div>
 
         <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center bg-rose-950/40 p-2.5 rounded-lg border border-rose-800/40"></p>
@@ -139,31 +162,31 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- APLICAÇÃO PRINCIPAL (SÓ EXIBIDA APÓS O LOGIN)                      -->
+  <!-- APLICAÇÃO PRINCIPAL (EXIBIDA APÓS O LOGIN)                         -->
   <!-- ================================================================= -->
   <div id="main-app" class="hidden min-h-screen flex flex-col">
 
     <!-- BANNER DE INSTALAÇÃO PWA -->
-    <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-2.5 flex items-center justify-between text-xs sm:text-sm font-medium z-30 shadow-md">
+    <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-3 flex items-center justify-between text-xs sm:text-sm font-medium z-30 shadow-lg">
       <div class="flex items-center gap-2">
-        <i data-lucide="download" class="w-4 h-4"></i>
-        <span>Instale o App na tela inicial!</span>
+        <i data-lucide="download" class="w-5 h-5"></i>
+        <span>Instale o App na sua tela inicial!</span>
       </div>
       <div class="flex items-center gap-2">
-        <button id="btn-install-pwa" class="bg-slate-950 theme-accent px-3 py-1 rounded-lg text-xs font-bold transition-colors">
+        <button id="btn-install-pwa" class="bg-slate-950 theme-accent px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow">
           Instalar
         </button>
-        <button id="btn-dismiss-pwa" class="text-white/70 hover:text-white p-1">
+        <button id="btn-dismiss-pwa" class="text-white/80 hover:text-white p-1">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
     </div>
 
     <!-- TOPO FIXO -->
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-20 shadow-lg">
+    <header class="theme-card border-b sticky top-0 z-20 shadow-lg">
       <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
         
-        <button id="btn-open-drawer" class="p-2 -ml-2 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition-colors">
+        <button id="btn-open-drawer" class="p-2 -ml-2 text-slate-300 hover:text-white rounded-lg active:bg-white/10 transition-colors">
           <i data-lucide="menu" class="w-6 h-6"></i>
         </button>
 
@@ -179,17 +202,17 @@
       </div>
 
       <!-- DASHBOARD DE TOTAL E SALDO -->
-      <div class="bg-slate-950/80 backdrop-blur border-t border-slate-800/60 py-3 px-4">
+      <div class="border-t py-2.5 px-4" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
         <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
           
-          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col">
+          <div class="theme-card border rounded-xl p-2.5 flex flex-col">
             <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Total Comprado</span>
-            <span id="display-total" class="text-xl font-black text-slate-100 mt-0.5">R$ 0,00</span>
+            <span id="display-total" class="text-lg font-black text-slate-100 mt-0.5">R$ 0,00</span>
           </div>
 
-          <div id="card-saldo" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col transition-colors">
+          <div id="card-saldo" class="theme-card border rounded-xl p-2.5 flex flex-col transition-colors">
             <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Saldo Disponível</span>
-            <span id="display-balance" class="text-xl font-black theme-accent mt-0.5">Ilimitado</span>
+            <span id="display-balance" class="text-lg font-black theme-accent mt-0.5">Ilimitado</span>
           </div>
 
         </div>
@@ -197,11 +220,11 @@
     </header>
 
     <!-- MENU GAVETA LATERAL -->
-    <div id="drawer-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
+    <div id="drawer-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
     
-    <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] bg-slate-900 border-r border-slate-800 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] theme-card border-r z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
       
-      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+      <div class="p-4 border-b flex items-center justify-between" style="border-color: var(--bg-card-border);">
         <div class="flex items-center gap-3">
           <div class="p-2.5 rounded-xl theme-accent" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
             <i data-lucide="wallet" class="w-6 h-6"></i>
@@ -218,23 +241,23 @@
 
       <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
         
-        <!-- OPÇÕES DE TEMAS (TROCA DE CORES) -->
+        <!-- OPÇÕES DE TEMAS (TROCA RADICAL DE CORES DE FUNDO) -->
         <div>
           <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
           <div class="grid grid-cols-4 gap-2">
-            <button onclick="setTheme('emerald')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-emerald-500 transition-colors">
+            <button onclick="setTheme('emerald')" class="p-2.5 rounded-xl border flex flex-col items-center gap-1 hover:border-emerald-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
               <span class="w-5 h-5 rounded-full bg-emerald-500"></span>
               <span class="text-[9px] font-bold text-slate-400">Verde</span>
             </button>
-            <button onclick="setTheme('cyberpunk')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-cyan-500 transition-colors">
+            <button onclick="setTheme('cyberpunk')" class="p-2.5 rounded-xl border flex flex-col items-center gap-1 hover:border-cyan-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
               <span class="w-5 h-5 rounded-full bg-cyan-500"></span>
               <span class="text-[9px] font-bold text-slate-400">Azul</span>
             </button>
-            <button onclick="setTheme('purple')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-purple-500 transition-colors">
+            <button onclick="setTheme('purple')" class="p-2.5 rounded-xl border flex flex-col items-center gap-1 hover:border-purple-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
               <span class="w-5 h-5 rounded-full bg-purple-500"></span>
               <span class="text-[9px] font-bold text-slate-400">Roxo</span>
             </button>
-            <button onclick="setTheme('orange')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-orange-500 transition-colors">
+            <button onclick="setTheme('orange')" class="p-2.5 rounded-xl border flex flex-col items-center gap-1 hover:border-orange-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
               <span class="w-5 h-5 rounded-full bg-orange-500"></span>
               <span class="text-[9px] font-bold text-slate-400">Laranja</span>
             </button>
@@ -244,7 +267,7 @@
         <!-- DEFINIR SALDO -->
         <div>
           <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Configurações</h4>
-          <button id="btn-edit-budget" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-between border border-slate-700 transition-colors">
+          <button id="btn-edit-budget" class="w-full border text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-between transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
             <span class="flex items-center gap-2">
               <i data-lucide="edit-3" class="w-4 h-4 theme-accent"></i>
               Definir Limite do Mercado
@@ -264,8 +287,8 @@
 
       </div>
 
-      <!-- BOTÃO DE LOGOUT (SAIR) -->
-      <div class="p-4 border-t border-slate-800 flex items-center justify-between">
+      <!-- BOTÃO DE LOGOUT -->
+      <div class="p-4 border-t flex items-center justify-between" style="border-color: var(--bg-card-border);">
         <span class="text-[10px] text-slate-500">Meu Mercado 2.0</span>
         <button id="btn-logout" class="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sair da Conta
@@ -273,24 +296,24 @@
       </div>
     </aside>
 
-    <!-- CORPO PRINCIPAL DO APP -->
-    <main class="flex-1 max-w-md mx-auto w-full p-4 flex flex-col gap-4 overflow-y-auto">
+    <!-- CORPO PRINCIPAL DO APP COM ROLAGEMLIVRE -->
+    <main class="flex-1 max-w-md mx-auto w-full p-4 flex flex-col gap-4 overflow-y-auto pb-12">
       
       <!-- FORMULÁRIO DE ITENS -->
-      <form id="add-item-form" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
+      <form id="add-item-form" class="theme-card border rounded-2xl p-4 shadow-md space-y-3">
         <div>
           <input type="text" id="item-name" placeholder="Adicionar o nome do item (opcional)" 
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none theme-border-accent transition-colors">
+            class="w-full border rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
         </div>
 
         <div class="grid grid-cols-12 gap-2">
           <div class="col-span-7 relative">
             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-bold">R$</span>
             <input type="number" id="item-price" step="0.01" min="0" placeholder="0,00" required
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-100 font-bold placeholder-slate-600 focus:outline-none theme-border-accent transition-colors">
+              class="w-full border rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-100 font-bold placeholder-slate-600 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
           </div>
 
-          <div class="col-span-5 flex items-center bg-slate-950 border border-slate-800 rounded-xl px-1">
+          <div class="col-span-5 flex items-center border rounded-xl px-1" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
             <button type="button" id="btn-qty-minus" class="p-2 text-slate-400 hover:text-white active:scale-90 transition-transform">
               <i data-lucide="minus" class="w-4 h-4"></i>
             </button>
@@ -308,21 +331,23 @@
         </button>
       </form>
 
-      <!-- LISTA DO CARRINHO -->
-      <div class="flex-1 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md overflow-hidden">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+      <!-- LISTA DO CARRINHO (ROLA-VEL E ACESSÍVEL) -->
+      <div class="theme-card border rounded-2xl p-4 shadow-md flex flex-col space-y-3">
+        <div class="flex items-center justify-between pb-3 border-b" style="border-color: var(--bg-card-border);">
           <div class="flex items-center gap-2">
             <i data-lucide="list-checks" class="w-4 h-4 theme-accent"></i>
             <h2 class="font-bold text-slate-200 text-sm">Carrinho Atual</h2>
           </div>
-          <span id="items-count-badge" class="text-xs bg-slate-800 text-slate-300 font-semibold px-2 py-0.5 rounded-full">0 itens</span>
+          <span id="items-count-badge" class="text-xs bg-black/40 text-slate-300 font-semibold px-2 py-0.5 rounded-full border" style="border-color: var(--bg-card-border);">0 itens</span>
         </div>
 
-        <div id="cart-list" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
+        <!-- LISTA DE ITENS -->
+        <div id="cart-list" class="space-y-2.5 min-h-[120px]"></div>
 
-        <div class="pt-3 border-t border-slate-800">
-          <button id="btn-finish-shopping" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition-colors">
-            <i data-lucide="check-circle" class="w-5 h-5"></i>
+        <!-- BOTÃO DE FINALIZAR COMPRA -->
+        <div class="pt-3 border-t" style="border-color: var(--bg-card-border);">
+          <button id="btn-finish-shopping" class="w-full border text-slate-200 hover:text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <i data-lucide="check-circle" class="w-5 h-5 theme-accent"></i>
             Finalizar Compra
           </button>
         </div>
@@ -332,8 +357,8 @@
   </div>
 
   <!-- MODAL DE ALERTA DE SALDO ACABANDO -->
-  <div id="alert-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-rose-500/40 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
+  <div id="alert-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="theme-card border border-rose-500/40 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       <div class="w-14 h-14 bg-rose-500/20 border border-rose-500/40 rounded-full flex items-center justify-center text-rose-400 mx-auto">
         <i data-lucide="alert-triangle" class="w-8 h-8"></i>
       </div>
@@ -343,15 +368,15 @@
         <p id="alert-modal-text" class="text-slate-400 text-xs mt-2">Restam menos de R$ 10,00 no seu limite.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2">
-        <button id="btn-alert-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">Parar</button>
+        <button id="btn-alert-stop" class="border text-slate-300 text-xs font-bold py-2.5 rounded-xl transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">Parar</button>
         <button id="btn-alert-continue" class="theme-bg-accent text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">Continuar</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL DE CONFIRMAÇÃO DE ARQUIVAMENTO -->
-  <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
+  <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="theme-card border w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       <div class="w-12 h-12 rounded-full flex items-center justify-center theme-accent mx-auto" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
         <i data-lucide="archive" class="w-6 h-6"></i>
       </div>
@@ -360,7 +385,7 @@
         <p class="text-slate-400 text-xs mt-1">A lista atual será limpa, mas o total ficará mantido no seu Histórico.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2">
-        <button id="btn-cancel-finish" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">Cancelar</button>
+        <button id="btn-cancel-finish" class="border text-slate-300 text-xs font-bold py-2.5 rounded-xl transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">Cancelar</button>
         <button id="btn-confirm-finish" class="theme-bg-accent text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">Sim, Arquivar</button>
       </div>
     </div>
@@ -395,14 +420,69 @@
       history: []
     };
 
-    // TROCA DE TEMAS
+    // TROCA DE TEMAS COMPLETA (FUNDO + CARDS + RELEVO)
     function setTheme(themeName) {
       document.documentElement.setAttribute('data-theme', themeName);
       localStorage.setItem('selected_theme', themeName);
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
-    // MUDANÇA ENTRE ENTRAR E CADASTRAR
+    // REGISTRO DE MANIFESTO PWA DINÂMICO E EVENTO DE INSTALAÇÃO
+    function setupPWA() {
+      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+        <rect width="512" height="512" rx="128" fill="#020617"/>
+        <path d="M160 128h192l32 160H128l32-160z" fill="#10b981"/>
+        <path d="M128 288h256l-24 112H152l-24-112z" fill="#059669"/>
+        <circle cx="176" cy="432" r="32" fill="#34d399"/>
+        <circle cx="336" cy="432" r="32" fill="#34d399"/>
+      </svg>`;
+
+      const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
+
+      const manifestData = {
+        name: "Meu Mercado 2.0",
+        short_name: "Mercado 2.0",
+        start_url: "./",
+        display: "standalone",
+        background_color: "#020617",
+        theme_color: "#020617",
+        icons: [{ src: iconUrl, sizes: "192x192 512x512", type: "image/svg+xml" }]
+      };
+
+      const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+      document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
+
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          self.addEventListener('install', e => self.skipWaiting());
+          self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+        `;
+        const swBlob = new Blob([swCode], { type: 'text/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+      }
+    }
+
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('pwa-install-banner').classList.remove('hidden');
+    });
+
+    document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+        document.getElementById('pwa-install-banner').classList.add('hidden');
+      }
+    });
+
+    document.getElementById('btn-dismiss-pwa')?.addEventListener('click', () => {
+      document.getElementById('pwa-install-banner').classList.add('hidden');
+    });
+
+    // CONTROLE DE AUTENTICAÇÃO
     let authMode = 'login';
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
@@ -423,7 +503,6 @@
       document.getElementById('auth-subtitle').innerText = "Cadastre um e-mail para usar com a família";
     });
 
-    // SUBMETER LOGIN OU CADASTRO
     document.getElementById('auth-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('auth-email').value.trim();
@@ -438,7 +517,7 @@
           await auth.createUserWithEmailAndPassword(email, password);
         }
       } catch (err) {
-        let msg = "Erro ao conectar. Verifique os dados.";
+        let msg = "Erro ao conectar. Verifique seus dados.";
         if (err.code === 'auth/user-not-found') msg = "Usuário não encontrado. Crie uma conta.";
         if (err.code === 'auth/wrong-password') msg = "Senha incorreta.";
         if (err.code === 'auth/email-already-in-use') msg = "E-mail já cadastrado. Faça login.";
@@ -448,12 +527,10 @@
       }
     });
 
-    // LOGOUT
     document.getElementById('btn-logout').addEventListener('click', () => {
       auth.signOut();
     });
 
-    // MONITORAMENTO DE AUTENTICAÇÃO OBRIGATÓRIA
     auth.onAuthStateChanged((user) => {
       currentUser = user;
       if (user) {
@@ -468,7 +545,6 @@
       }
     });
 
-    // SINCRONIZAÇÃO EM TEMPO REAL COM FIREBASE
     function initFirebaseSync(uid) {
       const docRef = db.collection("usuarios").doc(uid);
       
@@ -514,10 +590,10 @@
 
       if (saldo === null) {
         balanceEl.innerText = "Ilimitado";
-        balanceEl.className = "text-xl font-black text-slate-400 mt-0.5";
+        balanceEl.className = "text-lg font-black text-slate-400 mt-0.5";
       } else {
         balanceEl.innerText = formatCurrency(saldo);
-        balanceEl.className = saldo < 0 ? "text-xl font-black text-rose-500 mt-0.5" : "text-xl font-black theme-accent mt-0.5";
+        balanceEl.className = saldo < 0 ? "text-lg font-black text-rose-500 mt-0.5" : "text-lg font-black theme-accent mt-0.5";
       }
 
       document.getElementById('drawer-budget-text').innerText = appState.budget !== null ? `Teto: ${formatCurrency(appState.budget)}` : 'Teto: Não definido';
@@ -526,17 +602,17 @@
       document.getElementById('items-count-badge').innerText = `${appState.items.length} ${appState.items.length === 1 ? 'item' : 'itens'}`;
 
       if (appState.items.length === 0) {
-        cartList.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center py-8 text-slate-500"><p class="text-xs">Sua lista está vazia.</p></div>`;
+        cartList.innerHTML = `<div class="flex flex-col items-center justify-center text-center py-6 text-slate-500"><p class="text-xs">Sua lista está vazia.</p></div>`;
       } else {
         cartList.innerHTML = appState.items.map((item, index) => `
-          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm">
+          <div class="border rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
             <div class="flex-1 min-w-0">
               <p class="text-xs font-semibold text-slate-200 truncate">${item.name || 'Item sem nome'}</p>
               <p class="text-[11px] text-slate-400 mt-0.5"><span class="theme-accent font-bold">${formatCurrency(item.price)}</span> x ${item.qty} un</p>
             </div>
             <div class="flex items-center gap-2">
               <span class="text-sm font-black text-slate-100">${formatCurrency(item.price * item.qty)}</span>
-              <button onclick="removeItem(${index})" class="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg active:bg-slate-900"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              <button onclick="removeItem(${index})" class="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg active:bg-white/5"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
           </div>
         `).join('');
@@ -549,7 +625,7 @@
         historyList.innerHTML = `<p class="text-xs text-slate-500 italic py-2">Nenhuma compra arquivada.</p>`;
       } else {
         historyList.innerHTML = appState.history.slice().reverse().map((h) => `
-          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
+          <div class="border rounded-xl p-3 flex items-center justify-between" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
             <div>
               <p class="text-xs font-semibold text-slate-300">${h.date}</p>
               <p class="text-[10px] text-slate-500">${h.itemCount} ${h.itemCount === 1 ? 'item' : 'itens'}</p>
@@ -562,7 +638,6 @@
       lucide.createIcons();
     }
 
-    // ADICIONAR ITEM
     document.getElementById('add-item-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const nameInput = document.getElementById('item-name');
@@ -599,7 +674,6 @@
       saveToFirestore();
     };
 
-    // CONTROLE DA GAVETA
     const drawer = document.getElementById('drawer');
     const backdrop = document.getElementById('drawer-backdrop');
 
@@ -628,7 +702,6 @@
       }
     });
 
-    // FINALIZAR E ARQUIVAR COMPRA
     document.getElementById('btn-finish-shopping').addEventListener('click', () => {
       if (appState.items.length === 0) return;
       document.getElementById('confirm-finish-modal').classList.remove('hidden');
@@ -655,6 +728,9 @@
 
     document.getElementById('btn-alert-continue').addEventListener('click', () => document.getElementById('alert-modal').classList.add('hidden'));
     document.getElementById('btn-alert-stop').addEventListener('click', () => document.getElementById('alert-modal').classList.add('hidden'));
+
+    // Inicialização do PWA
+    setupPWA();
   </script>
 </body>
 </html>
