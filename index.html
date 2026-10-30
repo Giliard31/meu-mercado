@@ -144,7 +144,6 @@
         <p class="theme-text-muted text-sm mt-1" id="auth-subtitle">Entre com sua conta para sincronizar</p>
       </div>
 
-      <!-- FORMULÁRIO DE LOGIN E CADASTRO -->
       <div id="auth-forms-container">
         <div class="grid grid-cols-2 gap-2 p-1.5 rounded-xl mb-5 border-2" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
           <button id="tab-login" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
@@ -194,18 +193,6 @@
   <!-- APLICAÇÃO PRINCIPAL                                              -->
   <!-- ================================================================= -->
   <div id="main-app" class="hidden h-screen w-screen flex flex-col overflow-hidden relative">
-
-    <!-- BANNER PWA -->
-    <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-3 flex items-center justify-between text-sm font-bold z-30 shadow-lg shrink-0">
-      <div class="flex items-center gap-2.5">
-        <i data-lucide="download" class="w-5 h-5"></i>
-        <span>Instalar o App nos seus aplicativos!</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <button id="btn-install-pwa" class="bg-black text-white px-3.5 py-1.5 rounded-lg text-xs font-black shadow">Instalar</button>
-        <button id="btn-dismiss-pwa" class="text-white/80 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-    </div>
 
     <!-- TOPO & DASHBOARD -->
     <header class="theme-card border-b-2 shrink-0 z-20 shadow-md">
@@ -358,7 +345,7 @@
 
     <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
       
-      <!-- PAINEL ADMIN DE APROVAÇÃO COM CHECKBOX E EXCLUSÃO -->
+      <!-- PAINEL ADMIN -->
       <div id="admin-panel" class="hidden border-2 rounded-2xl p-3.5 theme-card shadow-sm space-y-3">
         <div class="flex items-center gap-2">
           <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
@@ -422,7 +409,7 @@
     </div>
   </aside>
 
-  <!-- MODAL DEFINIR LIMITE (SUBSTITUI O PROMPT/ALERT NATIVO) -->
+  <!-- MODAL DEFINIR LIMITE -->
   <div id="budget-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-4">
       <div class="flex items-center gap-2.5 pb-2 border-b-2" style="border-color: var(--bg-card-border);">
@@ -511,7 +498,8 @@
       chat: []
     };
 
-    const ADMIN_EMAIL = "giliardmartins87@gmail.com";
+    // E-MAIL DE ADMIN ATUALIZADO
+    const ADMIN_EMAIL = "giliardmartins@gmail.com";
 
     function setTheme(themeName) {
       document.documentElement.setAttribute('data-theme', themeName);
@@ -519,6 +507,7 @@
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
+    // SETUP PWA INTELIGENTE (VERIFICA SE JÁ ESTÁ INSTALADO PARA NÃO PEDIR DE NOVO)
     function setupPWA() {
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
         <rect width="512" height="512" rx="128" fill="#0284c7"/>
@@ -548,24 +537,6 @@
         });
       }
     }
-
-    let deferredPrompt = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('pwa-install-banner').classList.remove('hidden');
-    });
-
-    document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt = null;
-        document.getElementById('pwa-install-banner').classList.add('hidden');
-      }
-    });
-    document.getElementById('btn-dismiss-pwa')?.addEventListener('click', () => {
-      document.getElementById('pwa-install-banner').classList.add('hidden');
-    });
 
     let authMode = 'login';
     const tabLogin = document.getElementById('tab-login');
@@ -678,7 +649,6 @@
       }
     });
 
-    // LISTAR USUÁRIOS NA GAVETA DO ADMIN COM CHECKBOX E EXCLUSÃO
     function initAdminListener() {
       unsubscribeAdmin = db.collection("aprovacoes").onSnapshot((snapshot) => {
         const listEl = document.getElementById('users-admin-list');
@@ -989,7 +959,6 @@
     document.getElementById('btn-close-drawer').addEventListener('click', closeDrawer);
     backdrop.addEventListener('click', closeDrawer);
 
-    // MODAL DE EDITAR LIMITE NATIVO (SEM PROMPT DO NAVEGADOR)
     const budgetModal = document.getElementById('budget-modal');
     document.getElementById('btn-edit-budget').addEventListener('click', () => {
       closeDrawer();
