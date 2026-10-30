@@ -6,7 +6,7 @@
   <title>Meu Mercado 2.0</title>
   
   <!-- Configurações PWA e Theme -->
-  <meta name="theme-color" content="#121826">
+  <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Mercado 2.0">
@@ -44,13 +44,13 @@
   <link rel="manifest" id="manifest-placeholder">
 
   <style>
-    /* Trava scroll global para comportamento Nativo/App */
+    /* Desativa toques indesejados e rolagem de elástico em navegadores mobile */
     body {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    /* Estilização para barra de rolagem fina e escura */
+    /* Customização para scrollbar fina e discreta */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -66,17 +66,17 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-hidden">
 
   <!-- ================================================================= -->
-  <!-- MODAL INICIAL DE DEFINIÇÃO DE TETO/ORÇAMENTO                     -->
+  <!-- MODAL INICIAL: PERGUNTA DE ORÇAMENTO                              -->
   <!-- ================================================================= -->
   <div id="welcome-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative animate-fade-in">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
       
       <div class="flex flex-col items-center text-center mb-6">
         <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center text-emerald-400 mb-3 shadow-lg shadow-emerald-500/10">
           <i data-lucide="shopping-bag" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-bold text-slate-100">Meu Mercado 2.0</h2>
-        <p class="text-slate-400 text-sm mt-1">Quanto você pretende gastar hoje?</p>
+        <p class="text-slate-400 text-sm mt-1">Quanto você tem para gastar no supermercado hoje?</p>
       </div>
 
       <div class="space-y-4">
@@ -91,7 +91,7 @@
 
         <button id="btn-start-shopping" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all">
           <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-          Começar as Compras
+          Começar as compras
         </button>
 
         <button id="btn-skip-budget" class="w-full text-slate-500 hover:text-slate-400 text-sm font-medium py-2 text-center transition-colors">
@@ -102,12 +102,12 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- BARRA DE BANNER DE INSTALAÇÃO PWA                                -->
+  <!-- BANNER DE INSTALAÇÃO PWA (SOLICITA INSTALAÇÃO NO CELULAR)        -->
   <!-- ================================================================= -->
   <div id="pwa-install-banner" class="hidden bg-emerald-600 text-white px-4 py-2.5 flex items-center justify-between text-xs sm:text-sm font-medium z-40 shadow-md">
     <div class="flex items-center gap-2">
       <i data-lucide="download" class="w-4 h-4"></i>
-      <span>Instale o App na sua tela inicial!</span>
+      <span>Instale o App na tela inicial!</span>
     </div>
     <div class="flex items-center gap-2">
       <button id="btn-install-pwa" class="bg-slate-950 text-emerald-400 hover:bg-slate-900 px-3 py-1 rounded-lg text-xs font-bold transition-colors">
@@ -120,12 +120,12 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- TOPO FIXO (HEADER & DASHBOARD DE VALORES)                         -->
+  <!-- TOPO FIXO (HEADER & DASHBOARD DE TOTAL E SALDO)                   -->
   <!-- ================================================================= -->
   <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30 shadow-lg">
     <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
       
-      <!-- Botão Menu Gaveta -->
+      <!-- Botão Menu Gaveta (3 barrinhas) -->
       <button id="btn-open-drawer" class="p-2 -ml-2 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition-colors">
         <i data-lucide="menu" class="w-6 h-6"></i>
       </button>
@@ -136,26 +136,26 @@
         Meu Mercado 2.0
       </h1>
 
-      <!-- Status de Conexão Firebase -->
-      <div id="sync-indicator" class="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-950/50 border border-emerald-800/50 px-2 py-1 rounded-full">
+      <!-- Status Nuvem Firebase -->
+      <div id="sync-indicator" class="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-950/50 border border-emerald-800/50 px-2.5 py-1 rounded-full">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="hidden sm:inline">Ao Vivo</span>
+        <span class="text-[11px]">Nuvem</span>
       </div>
     </div>
 
-    <!-- Dashboard Fixo de Total & Saldo -->
+    <!-- Painel Fixo de Valores (Total Comprado + Saldo Disponível) -->
     <div class="bg-slate-950/80 backdrop-blur border-t border-slate-800/60 py-3 px-4">
       <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
         
-        <!-- Bloco Total Comprado -->
+        <!-- Total Gasto -->
         <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Total Gasto</span>
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Total Comprado</span>
           <span id="display-total" class="text-xl font-black text-slate-100 mt-0.5">R$ 0,00</span>
         </div>
 
-        <!-- Bloco Saldo Disponível -->
+        <!-- Saldo Restante -->
         <div id="card-saldo" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col transition-colors">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Saldo Restante</span>
+          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Saldo Disponível</span>
           <span id="display-balance" class="text-xl font-black text-emerald-400 mt-0.5">Ilimitado</span>
         </div>
 
@@ -164,20 +164,20 @@
   </header>
 
   <!-- ================================================================= -->
-  <!-- MENU GAVETA LATERAL (DRAWER)                                     -->
+  <!-- MENU GAVETA LATERAL (DRAWER NA ESQUERDA)                          -->
   <!-- ================================================================= -->
   <div id="drawer-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0"></div>
   
   <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
     
-    <!-- Cabeçalho da Gaveta -->
+    <!-- Cabeçalho com Ícone de Carteira -->
     <div class="p-4 border-b border-slate-800 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+        <div class="p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
           <i data-lucide="wallet" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 class="font-bold text-slate-100 text-sm">Minha Carteira</h3>
+          <h3 class="font-bold text-slate-100 text-sm">Carteira</h3>
           <p id="drawer-budget-text" class="text-xs text-slate-400">Teto: Não definido</p>
         </div>
       </div>
@@ -186,22 +186,22 @@
       </button>
     </div>
 
-    <!-- Conteúdo da Gaveta (Opções e Histórico) -->
+    <!-- Opções da Gaveta e Histórico Persistente -->
     <div class="flex-1 overflow-y-auto p-4 space-y-6">
       
-      <!-- Ações do Orcamento -->
+      <!-- Alterar Saldo -->
       <div>
-        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Configurar Saldo</h4>
+        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Configurações</h4>
         <button id="btn-edit-budget" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-between border border-slate-700 transition-colors">
           <span class="flex items-center gap-2">
             <i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i>
-            Alterar Limite do Mercado
+            Redefinir Limite de Gastos
           </span>
           <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
         </button>
       </div>
 
-      <!-- Histórico de Compras Passadas -->
+      <!-- Histórico de Compras Anteriores -->
       <div>
         <div class="flex items-center justify-between mb-3">
           <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Histórico de Compras</h4>
@@ -209,34 +209,33 @@
         </div>
         
         <div id="history-list" class="space-y-2">
-          <!-- Renderizado via JS -->
-          <p class="text-xs text-slate-500 italic py-2">Nenhuma compra finalizada ainda.</p>
+          <!-- Inserido dinamicamente pelo JS -->
         </div>
       </div>
 
     </div>
 
-    <!-- Rodapé da Gaveta -->
+    <!-- Rodapé do Menu -->
     <div class="p-4 border-t border-slate-800 text-center">
-      <p class="text-[10px] text-slate-500">Meu Mercado 2.0 • Sincronização Nuvem</p>
+      <p class="text-[10px] text-slate-500">Meu Mercado 2.0 • Sincronização Ativa</p>
     </div>
   </aside>
 
   <!-- ================================================================= -->
-  <!-- CORPO PRINCIPAL (FORMULÁRIO E LISTA ATUAL)                        -->
+  <!-- CORPO DA PÁGINA (FORMULÁRIO DE ENTRADA E LISTA DO CARRINHO)       -->
   <!-- ================================================================= -->
   <main class="flex-1 max-w-md mx-auto w-full p-4 flex flex-col gap-4 overflow-y-auto">
     
-    <!-- Form de Adição de Item -->
+    <!-- Campos de Entrada (Nome opcional, Preço Unitário e Quantidade) -->
     <form id="add-item-form" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
       
       <!-- Nome do Item (Opcional) -->
       <div>
-        <input type="text" id="item-name" placeholder="Nome do item (opcional)" 
+        <input type="text" id="item-name" placeholder="Adicionar o nome do item (opcional)" 
           class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors">
       </div>
 
-      <!-- Valor Unitário e Quantidade -->
+      <!-- Valor Unitário e Botões de Quantidade -->
       <div class="grid grid-cols-12 gap-2">
         <div class="col-span-7 relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-bold">R$</span>
@@ -244,6 +243,7 @@
             class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-100 font-bold placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors">
         </div>
 
+        <!-- Seletor de Quantidade -->
         <div class="col-span-5 flex items-center bg-slate-950 border border-slate-800 rounded-xl px-1">
           <button type="button" id="btn-qty-minus" class="p-2 text-slate-400 hover:text-white active:scale-90 transition-transform">
             <i data-lucide="minus" class="w-4 h-4"></i>
@@ -259,11 +259,11 @@
       <!-- Botão Adicionar à Lista -->
       <button type="submit" id="btn-add-item" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all">
         <i data-lucide="plus-circle" class="w-5 h-5"></i>
-        <span>Adicionar à Lista</span>
+        <span>Adicionar à lista</span>
       </button>
     </form>
 
-    <!-- Lista de Compras Atual -->
+    <!-- Lista Estilo Carrinho de Mercado -->
     <div class="flex-1 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md overflow-hidden">
       
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -274,12 +274,12 @@
         <span id="items-count-badge" class="text-xs bg-slate-800 text-slate-300 font-semibold px-2 py-0.5 rounded-full">0 itens</span>
       </div>
 
-      <!-- Container Rola-vel da Lista -->
+      <!-- Lista Rola-vel de Itens Comprados -->
       <div id="cart-list" class="flex-1 overflow-y-auto py-3 space-y-2.5">
-        <!-- Itens inseridos via JS -->
+        <!-- Renderizado dinamicamente -->
       </div>
 
-      <!-- Botão Finalizar / Limpar Compras -->
+      <!-- Botão para Finalizar e Salvar no Histórico -->
       <div class="pt-3 border-t border-slate-800">
         <button id="btn-finish-shopping" class="w-full bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition-colors">
           <i data-lucide="check-circle" class="w-5 h-5"></i>
@@ -292,10 +292,10 @@
   </main>
 
   <!-- ================================================================= -->
-  <!-- MODAL DE ALERTA DE SALDO ACABANDO                                 -->
+  <!-- MODAL DE ALERTA: SALDO ACABANDO (< R$ 10,00)                     -->
   <!-- ================================================================= -->
   <div id="alert-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-rose-500/40 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4 animate-bounce-short">
+    <div class="bg-slate-900 border border-rose-500/40 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       
       <div class="w-14 h-14 bg-rose-500/20 border border-rose-500/40 rounded-full flex items-center justify-center text-rose-400 mx-auto">
         <i data-lucide="alert-triangle" class="w-8 h-8"></i>
@@ -303,15 +303,15 @@
 
       <div>
         <h3 class="text-xl font-bold text-slate-100">Atenção!</h3>
-        <p class="text-rose-400 font-semibold text-sm mt-1">Seu saldo está acabando!</p>
-        <p id="alert-modal-text" class="text-slate-400 text-xs mt-2">Restam menos de R$ 10,00 no seu limite definido.</p>
+        <p class="text-rose-400 font-semibold text-sm mt-1">O seu saldo está acabando!</p>
+        <p id="alert-modal-text" class="text-slate-400 text-xs mt-2">Restam menos de R$ 10,00 no seu limite disponível.</p>
       </div>
 
       <div class="grid grid-cols-2 gap-3 pt-2">
         <button id="btn-alert-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">
           Parar
         </button>
-        <button id="btn-alert-continue" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 transition-colors">
+        <button id="btn-alert-continue" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">
           Continuar
         </button>
       </div>
@@ -320,7 +320,7 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- MODAL DE CONFIRMAÇÃO PARA FINALIZAR/LIMPAR                       -->
+  <!-- MODAL DE CONFIRMAÇÃO PARA FINALIZAR COMPRA                        -->
   <!-- ================================================================= -->
   <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
@@ -330,9 +330,9 @@
       </div>
 
       <div>
-        <h3 class="text-lg font-bold text-slate-100">Finalizar esta compra?</h3>
+        <h3 class="text-lg font-bold text-slate-100">Deseja excluir esta lista da tela principal?</h3>
         <p class="text-slate-400 text-xs mt-1">
-          Deseja limpar a lista da tela principal? O total gasto será arquivado com sucesso no seu **Histórico**.
+          A lista da tela principal será limpa, mas o valor total será guardado com sucesso no seu **Histórico**.
         </p>
       </div>
 
@@ -349,15 +349,13 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- LÓGICA JAVASCRIPT & INTEGRAÇÃO FIREBASE                           -->
+  <!-- SCRIPTS & LOGICA DO APLICATIVO                                    -->
   <!-- ================================================================= -->
   <script>
-    // Initialize Lucide Icons
+    // 1. Inicialização dos Ícones
     lucide.createIcons();
 
-    // -----------------------------------------------------------------
-    // 1. CONFIGURAÇÃO E INICIALIZAÇÃO DO FIREBASE
-    // -----------------------------------------------------------------
+    // 2. Credenciais do Firebase Firestore
     const firebaseConfig = {
       apiKey: "AIzaSyDAiW612rePMhsup_R30pM9py2VZsghP2Y",
       authDomain: "meu-mercado-555b8.firebaseapp.com",
@@ -370,27 +368,20 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    
-    // Habilitar persistência offline se possível
     db.settings({ experimentalForceLongPolling: true });
 
-    // Referência do Documento Único Compartilhado no Firestore
+    // Documento compartilhado para sincronização em tempo real entre dois aparelhos
     const docRef = db.collection("mercado").doc("sessao_atual");
 
-    // -----------------------------------------------------------------
-    // 2. ESTADO DA APLICAÇÃO (STATE)
-    // -----------------------------------------------------------------
+    // 3. Estado Global
     let appState = {
-      budget: null, // null = sem limite definido
-      items: [],    // [{ id, name, price, qty }]
-      history: []   // [{ id, date, total, itemCount }]
+      budget: null,
+      items: [],
+      history: []
     };
 
-    // -----------------------------------------------------------------
-    // 3. PWA SETUP (MANIFEST & SERVICE WORKER DINÂMICO)
-    // -----------------------------------------------------------------
+    // 4. Configuração PWA (Instalação e Service Worker)
     function setupPWA() {
-      // SVG do Ícone do App (Carrinho Verde Minimalista)
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
         <rect width="512" height="512" rx="128" fill="#0f172a"/>
         <path d="M160 128h192l32 160H128l32-160z" fill="#10b981"/>
@@ -407,7 +398,7 @@
         start_url: "./",
         display: "standalone",
         background_color: "#0f172a",
-        theme_color: "#121826",
+        theme_color: "#0f172a",
         icons: [
           { src: iconUrl, sizes: "192x192 512x512", type: "image/svg+xml" }
         ]
@@ -416,15 +407,11 @@
       const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
       document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
 
-      // Registrar Service Worker via Blob para suporte offline básico
       if ('serviceWorker' in navigator) {
         const swCode = `
-          const CACHE_NAME = 'mercado-v2';
           self.addEventListener('install', e => self.skipWaiting());
           self.addEventListener('activate', e => e.waitUntil(clients.claim()));
-          self.addEventListener('fetch', e => {
-            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-          });
+          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
         `;
         const swBlob = new Blob([swCode], { type: 'text/javascript' });
         navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
@@ -441,7 +428,6 @@
     document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
         deferredPrompt = null;
         document.getElementById('pwa-install-banner').classList.add('hidden');
       }
@@ -451,9 +437,7 @@
       document.getElementById('pwa-install-banner').classList.add('hidden');
     });
 
-    // -----------------------------------------------------------------
-    // 4. SINCRONIZAÇÃO EM TEMPO REAL COM FIREBASE
-    // -----------------------------------------------------------------
+    // 5. Escuta em Tempo Real do Firebase
     function initFirebaseSync() {
       docRef.onSnapshot((doc) => {
         if (doc.exists) {
@@ -463,11 +447,8 @@
           appState.history = data.history || [];
           renderUI();
         } else {
-          // Criar estrutura padrão se não existir no Firestore
           saveToFirestore();
         }
-      }, (error) => {
-        console.error("Erro na sincronização Firebase:", error);
       });
     }
 
@@ -480,17 +461,13 @@
       }, { merge: true });
     }
 
-    // -----------------------------------------------------------------
-    // 5. CÁLCULOS E REGRAS DE NEGÓCIO
-    // -----------------------------------------------------------------
+    // 6. Funções de Cálculo
     function calculateTotals() {
       const totalGasto = appState.items.reduce((acc, item) => acc + (item.price * item.qty), 0);
       let saldo = null;
-
       if (appState.budget !== null) {
         saldo = appState.budget - totalGasto;
       }
-
       return { totalGasto, saldo };
     }
 
@@ -498,10 +475,10 @@
       if (appState.budget !== null) {
         const saldo = appState.budget - currentTotal;
         if (saldo <= 10 && saldo >= 0) {
-          document.getElementById('alert-modal-text').innerText = `Restam apenas ${formatCurrency(saldo)} do seu limite de ${formatCurrency(appState.budget)}.`;
+          document.getElementById('alert-modal-text').innerText = `Restam apenas ${formatCurrency(saldo)} do seu limite total de ${formatCurrency(appState.budget)}.`;
           document.getElementById('alert-modal').classList.remove('hidden');
         } else if (saldo < 0) {
-          document.getElementById('alert-modal-text').innerText = `Você ultrapassou o limite em ${formatCurrency(Math.abs(saldo))}!`;
+          document.getElementById('alert-modal-text').innerText = `Você ultrapassou o seu limite em ${formatCurrency(Math.abs(saldo))}!`;
           document.getElementById('alert-modal').classList.remove('hidden');
         }
       }
@@ -512,20 +489,18 @@
       return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    // -----------------------------------------------------------------
-    // 6. RENDERIZAÇÃO DA INTERFACE (UI)
-    // -----------------------------------------------------------------
+    // 7. Renderização da Interface
     function renderUI() {
       const { totalGasto, saldo } = calculateTotals();
 
-      // Modal Inicial
+      // Modal de Início
       if (appState.budget === null && appState.items.length === 0 && !localStorage.getItem('welcome_seen')) {
         document.getElementById('welcome-modal').classList.remove('hidden');
       } else {
         document.getElementById('welcome-modal').classList.add('hidden');
       }
 
-      // Atualiza Cabeçalho Fixo
+      // Atualiza Valores da Barra Fixa
       document.getElementById('display-total').innerText = formatCurrency(totalGasto);
       
       const balanceEl = document.getElementById('display-balance');
@@ -554,7 +529,7 @@
         ? `Teto: ${formatCurrency(appState.budget)}` 
         : 'Teto: Não definido';
 
-      // Renderiza Itens do Carrinho
+      // Renderiza Lista de Compras
       const cartList = document.getElementById('cart-list');
       document.getElementById('items-count-badge').innerText = `${appState.items.length} ${appState.items.length === 1 ? 'item' : 'itens'}`;
 
@@ -563,7 +538,7 @@
           <div class="h-full flex flex-col items-center justify-center text-center py-8 text-slate-500">
             <i data-lucide="shopping-bag" class="w-10 h-10 mb-2 opacity-40"></i>
             <p class="text-xs">Sua lista está vazia.</p>
-            <p class="text-[10px] text-slate-600 mt-0.5">Adicione o valor dos produtos acima.</p>
+            <p class="text-[10px] text-slate-600 mt-0.5">Informe o valor dos produtos acima.</p>
           </div>
         `;
       } else {
@@ -585,12 +560,12 @@
         `).join('');
       }
 
-      // Renderiza Histórico na Gaveta
+      // Renderiza Histórico na Carteira
       const historyList = document.getElementById('history-list');
       document.getElementById('history-count').innerText = appState.history.length;
 
       if (appState.history.length === 0) {
-        historyList.innerHTML = `<p class="text-xs text-slate-500 italic py-2">Nenhuma compra finalizada ainda.</p>`;
+        historyList.innerHTML = `<p class="text-xs text-slate-500 italic py-2">Nenhuma compra arquivada.</p>`;
       } else {
         historyList.innerHTML = appState.history.slice().reverse().map((h) => `
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between">
@@ -606,16 +581,10 @@
       lucide.createIcons();
     }
 
-    // -----------------------------------------------------------------
-    // 7. EVENTOS E MANIPULAÇÃO DA INTERFACE
-    // -----------------------------------------------------------------
-
-    // Iniciar Compras pelo Modal
+    // 8. Handlers de Eventos
     document.getElementById('btn-start-shopping').addEventListener('click', () => {
       const val = parseFloat(document.getElementById('initial-budget-input').value);
-      if (!isNaN(val) && val > 0) {
-        appState.budget = val;
-      }
+      if (!isNaN(val) && val > 0) appState.budget = val;
       localStorage.setItem('welcome_seen', 'true');
       saveToFirestore();
       document.getElementById('welcome-modal').classList.add('hidden');
@@ -628,7 +597,6 @@
       document.getElementById('welcome-modal').classList.add('hidden');
     });
 
-    // Submeter Item
     document.getElementById('add-item-form').addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -642,25 +610,18 @@
 
       if (isNaN(price) || price <= 0) return;
 
-      const newItem = {
-        id: Date.now().toString(),
-        name: name,
-        price: price,
-        qty: qty
-      };
+      appState.items.push({ id: Date.now().toString(), name, price, qty });
 
-      appState.items.push(newItem);
-
-      // Feedback visual no botão de adicionar
+      // Animação/Mudança de cor no botão ao adicionar
       const btnAdd = document.getElementById('btn-add-item');
       btnAdd.classList.remove('bg-emerald-600');
       btnAdd.classList.add('bg-emerald-500', 'scale-[0.98]');
       setTimeout(() => {
         btnAdd.classList.remove('bg-emerald-500', 'scale-[0.98]');
         btnAdd.classList.add('bg-emerald-600');
-      }, 200);
+      }, 180);
 
-      // Reset dos Campos mantendo foco
+      // Limpa para a próxima entrada rápida
       nameInput.value = '';
       priceInput.value = '';
       qtyInput.value = '1';
@@ -668,12 +629,10 @@
 
       saveToFirestore();
 
-      // Checa Alerta de Saldo
       const { totalGasto } = calculateTotals();
       checkBudgetAlert(totalGasto);
     });
 
-    // Quantidade + e -
     document.getElementById('btn-qty-minus').addEventListener('click', () => {
       const input = document.getElementById('item-qty');
       let val = parseInt(input.value) || 1;
@@ -686,13 +645,12 @@
       input.value = val + 1;
     });
 
-    // Remover Item
     window.removeItem = function(index) {
       appState.items.splice(index, 1);
       saveToFirestore();
     };
 
-    // Controle do Menu Gaveta (Drawer)
+    // Controle da Gaveta
     const drawer = document.getElementById('drawer');
     const backdrop = document.getElementById('drawer-backdrop');
 
@@ -716,11 +674,10 @@
     document.getElementById('btn-close-drawer').addEventListener('click', closeDrawer);
     backdrop.addEventListener('click', closeDrawer);
 
-    // Alterar Limite na Gaveta
     document.getElementById('btn-edit-budget').addEventListener('click', () => {
       closeDrawer();
       const current = appState.budget !== null ? appState.budget : '';
-      const newVal = prompt("Digite o novo valor disponível para compras (R$):", current);
+      const newVal = prompt("Informe o novo limite para suas compras (R$):", current);
       if (newVal !== null) {
         const parsed = parseFloat(newVal.replace(',', '.'));
         appState.budget = !isNaN(parsed) && parsed > 0 ? parsed : null;
@@ -728,7 +685,7 @@
       }
     });
 
-    // Finalizar Compras & Confirmar
+    // Finalizar Compras
     document.getElementById('btn-finish-shopping').addEventListener('click', () => {
       if (appState.items.length === 0) return;
       document.getElementById('confirm-finish-modal').classList.remove('hidden');
@@ -742,22 +699,20 @@
       const { totalGasto } = calculateTotals();
       
       if (appState.items.length > 0) {
-        const historyEntry = {
+        appState.history.push({
           id: Date.now().toString(),
           date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
           total: totalGasto,
           itemCount: appState.items.length
-        };
-
-        appState.history.push(historyEntry);
-        appState.items = []; // Limpa lista atual
+        });
+        appState.items = [];
         saveToFirestore();
       }
 
       document.getElementById('confirm-finish-modal').classList.add('hidden');
     });
 
-    // Modais de Alerta
+    // Fechar Alertas
     document.getElementById('btn-alert-continue').addEventListener('click', () => {
       document.getElementById('alert-modal').classList.add('hidden');
     });
@@ -766,7 +721,7 @@
       document.getElementById('alert-modal').classList.add('hidden');
     });
 
-    // Inicialização do App
+    // Execução Inicial
     setupPWA();
     initFirebaseSync();
   </script>
