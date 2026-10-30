@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Meu Mercado 2.0</title>
   
-  <!-- Configurações PWA e Theme -->
   <meta name="theme-color" content="#0284c7">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -122,7 +121,7 @@
 
     .theme-text-muted { color: var(--text-muted); }
 
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--bg-page); }
     ::-webkit-scrollbar-thumb { background: var(--bg-card-border); border-radius: 4px; }
     .theme-accent { color: var(--brand-main); }
@@ -133,7 +132,7 @@
 <body data-theme="emerald" class="h-screen w-screen overflow-hidden font-sans antialiased">
 
   <!-- ================================================================= -->
-  <!-- TELA DE AUTENTICAÇÃO                                             -->
+  <!-- TELA DE AUTENTICAÇÃO E AGUARDANDO APROVAÇÃO                       -->
   <!-- ================================================================= -->
   <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: var(--bg-page);">
     <div class="theme-card border-2 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
@@ -146,52 +145,69 @@
         <p class="theme-text-muted text-sm mt-1" id="auth-subtitle">Entre com sua conta para sincronizar</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-2 p-1.5 rounded-xl mb-5 border-2" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-        <button id="tab-login" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
-        <button id="tab-register" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors theme-text-muted hover:text-current">Criar Conta</button>
+      <div id="auth-forms-container">
+        <div class="grid grid-cols-2 gap-2 p-1.5 rounded-xl mb-5 border-2" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+          <button id="tab-login" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
+          <button id="tab-register" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors theme-text-muted hover:text-current">Criar Conta</button>
+        </div>
+
+        <form id="auth-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold theme-text-muted uppercase tracking-wider mb-1.5">E-mail</label>
+            <input type="email" id="auth-email" required placeholder="seu@email.com" 
+              class="w-full border-2 rounded-xl px-4 py-3 text-base focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold theme-text-muted uppercase tracking-wider mb-1.5">Senha</label>
+            <input type="password" id="auth-password" required placeholder="••••••••" 
+              class="w-full border-2 rounded-xl px-4 py-3 text-base focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+          </div>
+
+          <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center bg-rose-500/10 p-3 rounded-lg border border-rose-500/30"></p>
+
+          <button type="submit" id="btn-auth-submit" class="w-full text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg text-base theme-bg-accent transition-all active:scale-[0.98]">
+            <i data-lucide="log-in" class="w-5 h-5"></i>
+            <span id="auth-btn-text">Entrar no Aplicativo</span>
+          </button>
+        </form>
       </div>
 
-      <form id="auth-form" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold theme-text-muted uppercase tracking-wider mb-1.5">E-mail</label>
-          <input type="email" id="auth-email" required placeholder="seu@email.com" 
-            class="w-full border-2 rounded-xl px-4 py-3 text-base focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+      <!-- TELA DE AGUARDANDO APROVAÇÃO -->
+      <div id="pending-approval-box" class="hidden text-center py-6 space-y-4">
+        <div class="w-16 h-16 bg-amber-500/20 border-2 border-amber-500/40 rounded-full flex items-center justify-center text-amber-400 mx-auto animate-bounce">
+          <i data-lucide="clock" class="w-8 h-8"></i>
         </div>
-
         <div>
-          <label class="block text-xs font-bold theme-text-muted uppercase tracking-wider mb-1.5">Senha</label>
-          <input type="password" id="auth-password" required placeholder="••••••••" 
-            class="w-full border-2 rounded-xl px-4 py-3 text-base focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+          <h3 class="text-lg font-bold">Aguardando Aprovação</h3>
+          <p class="theme-text-muted text-xs mt-1">Sua conta foi cadastrada, mas precisa ser aprovada pelo Administrador para liberar o acesso ao mercado.</p>
         </div>
-
-        <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center bg-rose-500/10 p-3 rounded-lg border border-rose-500/30"></p>
-
-        <button type="submit" id="btn-auth-submit" class="w-full text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg text-base theme-bg-accent transition-all active:scale-[0.98]">
-          <i data-lucide="log-in" class="w-5 h-5"></i>
-          <span id="auth-btn-text">Entrar no Aplicativo</span>
+        <button id="btn-logout-pending" class="w-full border-2 text-xs font-bold py-3 rounded-xl transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+          Sair e tentar outro e-mail
         </button>
-      </form>
+      </div>
+
     </div>
   </div>
 
   <!-- ================================================================= -->
-  <!-- ESTRUTURA PRINCIPAL                                              -->
+  <!-- APLICAÇÃO PRINCIPAL                                              -->
   <!-- ================================================================= -->
-  <div id="main-app" class="hidden h-screen w-screen flex flex-col overflow-hidden">
+  <div id="main-app" class="hidden h-screen w-screen flex flex-col overflow-hidden relative">
 
-    <!-- BANNER PWA DE INSTALAÇÃO -->
+    <!-- BANNER PWA -->
     <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-3 flex items-center justify-between text-sm font-bold z-30 shadow-lg shrink-0">
       <div class="flex items-center gap-2.5">
         <i data-lucide="download" class="w-5 h-5"></i>
         <span>Instalar o App nos seus aplicativos!</span>
       </div>
       <div class="flex items-center gap-2">
-        <button id="btn-install-pwa" class="bg-black text-white px-3.5 py-1.5 rounded-lg text-xs font-black shadow transition-colors">Instalar</button>
+        <button id="btn-install-pwa" class="bg-black text-white px-3.5 py-1.5 rounded-lg text-xs font-black shadow">Instalar</button>
         <button id="btn-dismiss-pwa" class="text-white/80 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
     </div>
 
-    <!-- TOPO & DASHBOARD (FIXO) -->
+    <!-- TOPO & DASHBOARD -->
     <header class="theme-card border-b-2 shrink-0 z-20 shadow-md">
       <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
         <button id="btn-open-drawer" class="p-2 -ml-2 theme-text-muted hover:text-current rounded-xl active:bg-black/5 transition-colors">
@@ -227,7 +243,6 @@
     <!-- ÁREA PRINCIPAL -->
     <main class="flex-1 max-w-md mx-auto w-full p-3.5 flex flex-col gap-3.5 overflow-hidden">
       
-      <!-- FORMULÁRIO DE ENTRADA (FIXO) -->
       <form id="add-item-form" class="theme-card border-2 rounded-2xl p-3.5 shadow-md space-y-2.5 shrink-0">
         <div>
           <input type="text" id="item-name" placeholder="Adicionar nome do item (opcional)" 
@@ -259,7 +274,6 @@
         </button>
       </form>
 
-      <!-- CARRINHO ATUAL (COM ROLAGEM) -->
       <div class="flex-1 theme-card border-2 rounded-2xl p-3.5 shadow-md flex flex-col min-h-0 overflow-hidden">
         <div class="flex items-center justify-between pb-2.5 border-b-2 shrink-0" style="border-color: var(--bg-card-border);">
           <div class="flex items-center gap-2">
@@ -269,10 +283,8 @@
           <span id="items-count-badge" class="text-xs theme-text-muted font-bold px-2.5 py-0.5 rounded-full border-2" style="border-color: var(--bg-card-border);">0 itens</span>
         </div>
 
-        <!-- LISTA ROLÁVEL -->
         <div id="cart-list" class="flex-1 overflow-y-auto py-2.5 space-y-2.5 pr-1"></div>
 
-        <!-- BOTÃO FINALIZAR -->
         <div class="pt-2.5 border-t-2 shrink-0" style="border-color: var(--bg-card-border);">
           <button id="btn-finish-shopping" class="w-full border-2 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
             <i data-lucide="check-circle" class="w-5 h-5 theme-accent"></i>
@@ -282,9 +294,59 @@
       </div>
 
     </main>
+
+    <!-- ================================================================= -->
+    <!-- BOTÃO FLUTUANTE DO CHAT COM NOTIFICAÇÃO                            -->
+    <!-- ================================================================= -->
+    <div class="absolute bottom-4 right-4 z-30">
+      <button id="btn-open-chat" class="relative theme-bg-accent text-white p-3.5 rounded-2xl shadow-xl flex items-center justify-center active:scale-95 transition-transform">
+        <i data-lucide="message-square" class="w-6 h-6"></i>
+        <span id="chat-badge" class="hidden absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-950 shadow">0</span>
+      </button>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODAL DO CHAT EM TEMPO REAL                                       -->
+    <!-- ================================================================= -->
+    <div id="chat-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4 hidden">
+      <div class="theme-card border-2 w-full sm:max-w-md h-[80vh] sm:h-[600px] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+        
+        <!-- Cabeçalho do Chat -->
+        <div class="p-4 border-b-2 flex items-center justify-between shrink-0" style="border-color: var(--bg-card-border);">
+          <div class="flex items-center gap-2.5">
+            <div class="p-2 rounded-xl theme-accent" style="background: var(--brand-bg);">
+              <i data-lucide="messages-square" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm">Chat da Família</h3>
+              <p class="text-[10px] theme-text-muted font-semibold">Mensagens em tempo real</p>
+            </div>
+          </div>
+          <button id="btn-close-chat" class="p-2 theme-text-muted hover:text-current rounded-xl">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Lista de Mensagens -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3" style="background-color: var(--bg-page);"></div>
+
+        <!-- Caixa de Envio -->
+        <form id="chat-form" class="p-3 border-t-2 flex items-center gap-2 shrink-0" style="border-color: var(--bg-card-border);">
+          <input type="text" id="chat-input" placeholder="Digite sua mensagem..." autocomplete="off"
+            class="flex-1 border-2 rounded-xl px-3.5 py-2.5 text-xs placeholder-slate-400 focus:outline-none theme-border-accent" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+          <button type="submit" class="theme-bg-accent text-white p-2.5 rounded-xl shadow active:scale-95 transition-transform">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </form>
+
+      </div>
+    </div>
+
   </div>
 
-  <!-- MENU GAVETA -->
+  <!-- ================================================================= -->
+  <!-- MENU GAVETA                                                      -->
+  <!-- ================================================================= -->
   <div id="drawer-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
   
   <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] theme-card border-r-2 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
@@ -304,6 +366,17 @@
     </div>
 
     <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
+      
+      <!-- PAINEL DE ADMINISTRAÇÃO (APENAS PARA O DONO) -->
+      <div id="admin-panel" class="hidden border-2 rounded-2xl p-3.5 theme-card shadow-sm space-y-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-amber-500">Painel do Administrador</h4>
+        </div>
+        <p class="text-[11px] theme-text-muted">Gerencie quem tem permissão para entrar na sua conta:</p>
+        <div id="pending-users-list" class="space-y-2"></div>
+      </div>
+
       <div>
         <h4 class="text-xs font-bold theme-text-muted uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
         <div class="grid grid-cols-5 gap-2">
@@ -358,15 +431,39 @@
     </div>
   </aside>
 
-  <!-- MODAL -->
-  <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+  <!-- ================================================================= -->
+  <!-- MODAL DE DETALHES DO HISTÓRICO (LISTA COMPLETA DA COMPRA)        -->
+  <!-- ================================================================= -->
+  <div id="history-detail-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="theme-card border-2 w-full max-w-md max-h-[85vh] rounded-2xl p-5 shadow-2xl flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between pb-3 border-b-2 shrink-0" style="border-color: var(--bg-card-border);">
+        <div class="flex items-center gap-2">
+          <i data-lucide="receipt" class="w-5 h-5 theme-accent"></i>
+          <h3 id="history-detail-title" class="font-bold text-base">Detalhes da Compra</h3>
+        </div>
+        <button id="btn-close-history-modal" class="p-1.5 theme-text-muted hover:text-current rounded-xl">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div id="history-detail-items" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
+
+      <div class="pt-3 border-t-2 flex items-center justify-between shrink-0 font-black text-sm" style="border-color: var(--bg-card-border);">
+        <span>Total Fechado:</span>
+        <span id="history-detail-total" class="theme-accent text-base">R$ 0,00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FINALIZAR COMPRA -->
+  <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       <div class="w-14 h-14 rounded-2xl flex items-center justify-center theme-accent mx-auto shadow-md" style="background: var(--brand-bg); border: 2px solid var(--brand-border);">
         <i data-lucide="archive" class="w-7 h-7"></i>
       </div>
       <div>
-        <h3 class="text-lg font-bold">Excluir da tela principal?</h3>
-        <p class="theme-text-muted text-xs font-medium mt-1">A lista atual será limpa, mas o total ficará guardado com sucesso no seu Histórico.</p>
+        <h3 class="text-lg font-bold">Deseja finalizar esta compra?</h3>
+        <p class="theme-text-muted text-xs font-medium mt-1">A lista será limpa e salva com todos os itens no seu Histórico.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2">
         <button id="btn-cancel-finish" class="border-2 text-xs font-bold py-3 rounded-xl transition-colors shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">Cancelar</button>
@@ -375,6 +472,7 @@
     </div>
   </div>
 
+  <!-- SCRIPT COMPLETO -->
   <script>
     lucide.createIcons();
 
@@ -395,12 +493,18 @@
 
     let currentUser = null;
     let unsubscribeSync = null;
+    let unsubscribeChat = null;
+    let unsubscribeAdmin = null;
 
     let appState = {
       budget: null,
       items: [],
-      history: []
+      history: [],
+      chat: [],
+      pendingUsers: []
     };
+
+    const ADMIN_EMAIL = "giliardmartins87@gmail.com"; // Defina seu e-mail como Administrador Principal
 
     function setTheme(themeName) {
       document.documentElement.setAttribute('data-theme', themeName);
@@ -408,7 +512,6 @@
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
-    // CONFIGURAÇÃO PWA NATIVA
     function setupPWA() {
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
         <rect width="512" height="512" rx="128" fill="#0284c7"/>
@@ -417,40 +520,24 @@
         <circle cx="176" cy="432" r="32" fill="#38bdf8"/>
         <circle cx="336" cy="432" r="32" fill="#38bdf8"/>
       </svg>`;
-
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
-
       const manifestData = {
         name: "Meu Mercado 2.0",
         short_name: "Mercado 2.0",
-        description: "Calculadora de compras para supermercado sincronizada em tempo real.",
         start_url: "./",
         scope: "./",
         display: "standalone",
         orientation: "portrait",
         background_color: "#020617",
         theme_color: "#0284c7",
-        categories: ["shopping", "finance", "productivity"],
-        icons: [
-          { src: iconUrl, sizes: "192x192", type: "image/svg+xml" },
-          { src: iconUrl, sizes: "512x512", type: "image/svg+xml" }
-        ]
+        icons: [{ src: iconUrl, sizes: "192x192 512x512", type: "image/svg+xml" }]
       };
-
       const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
       document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
 
       if ('serviceWorker' in navigator) {
-        const swCode = `
-          const CACHE_NAME = 'mercado-v2-cache';
-          self.addEventListener('install', e => self.skipWaiting());
-          self.addEventListener('activate', e => e.waitUntil(clients.claim()));
-          self.addEventListener('fetch', e => {
-            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-          });
-        `;
-        const swBlob = new Blob([swCode], { type: 'text/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+        const swCode = `self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('activate', e => e.waitUntil(clients.claim()));`;
+        navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'text/javascript' }))).catch(() => {});
       }
     }
 
@@ -464,18 +551,15 @@
     document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          document.getElementById('pwa-install-banner').classList.add('hidden');
-        }
         deferredPrompt = null;
+        document.getElementById('pwa-install-banner').classList.add('hidden');
       }
     });
-
     document.getElementById('btn-dismiss-pwa')?.addEventListener('click', () => {
       document.getElementById('pwa-install-banner').classList.add('hidden');
     });
 
+    // AUTENTICAÇÃO
     let authMode = 'login';
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
@@ -485,7 +569,6 @@
       tabLogin.className = "py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent";
       tabRegister.className = "py-3 text-sm font-bold rounded-lg transition-colors theme-text-muted hover:text-current";
       document.getElementById('auth-btn-text').innerText = "Entrar no Aplicativo";
-      document.getElementById('auth-subtitle').innerText = "Entre com sua conta para sincronizar";
     });
 
     tabRegister.addEventListener('click', () => {
@@ -493,7 +576,6 @@
       tabRegister.className = "py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent";
       tabLogin.className = "py-3 text-sm font-bold rounded-lg transition-colors theme-text-muted hover:text-current";
       document.getElementById('auth-btn-text').innerText = "Criar Nova Conta";
-      document.getElementById('auth-subtitle').innerText = "Cadastre um e-mail para usar com a família";
     });
 
     document.getElementById('auth-form').addEventListener('submit', async (e) => {
@@ -507,46 +589,99 @@
         if (authMode === 'login') {
           await auth.signInWithEmailAndPassword(email, password);
         } else {
-          await auth.createUserWithEmailAndPassword(email, password);
+          const cred = await auth.createUserWithEmailAndPassword(email, password);
+          // Registrar solicitação de aprovação pendente no Firestore
+          await db.collection("aprovacoes").doc(cred.user.uid).set({
+            email: email,
+            approved: email.toLowerCase() === ADMIN_EMAIL.toLowerCase(),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
         }
       } catch (err) {
-        let msg = "Erro ao conectar. Verifique seus dados.";
-        if (err.code === 'auth/user-not-found') msg = "Usuário não encontrado. Crie uma conta.";
-        if (err.code === 'auth/wrong-password') msg = "Senha incorreta.";
-        if (err.code === 'auth/email-already-in-use') msg = "E-mail já cadastrado. Faça login.";
-        if (err.code === 'auth/weak-password') msg = "A senha deve ter pelo menos 6 caracteres.";
-        errEl.innerText = msg;
+        errEl.innerText = err.message;
         errEl.classList.remove('hidden');
       }
     });
 
-    document.getElementById('btn-logout').addEventListener('click', () => {
-      auth.signOut();
-    });
+    document.getElementById('btn-logout').addEventListener('click', () => auth.signOut());
+    document.getElementById('btn-logout-pending').addEventListener('click', () => auth.signOut());
 
-    auth.onAuthStateChanged((user) => {
-      if (unsubscribeSync) {
-        unsubscribeSync();
-        unsubscribeSync = null;
-      }
+    auth.onAuthStateChanged(async (user) => {
+      if (unsubscribeSync) { unsubscribeSync(); unsubscribeSync = null; }
+      if (unsubscribeChat) { unsubscribeChat(); unsubscribeChat = null; }
+      if (unsubscribeAdmin) { unsubscribeAdmin(); unsubscribeAdmin = null; }
 
       currentUser = user;
 
       if (user) {
+        // Verificar se foi aprovado
+        const approvalDoc = await db.collection("aprovacoes").doc(user.uid).get();
+        let isApproved = false;
+
+        if (approvalDoc.exists) {
+          isApproved = approvalDoc.data().approved;
+        } else if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          isApproved = true;
+          await db.collection("aprovacoes").doc(user.uid).set({ email: user.email, approved: true });
+        }
+
+        if (!isApproved) {
+          document.getElementById('auth-forms-container').classList.add('hidden');
+          document.getElementById('pending-approval-box').classList.remove('hidden');
+          document.getElementById('auth-screen').classList.remove('hidden');
+          document.getElementById('main-app').classList.add('hidden');
+          return;
+        }
+
+        document.getElementById('pending-approval-box').classList.add('hidden');
+        document.getElementById('auth-forms-container').classList.remove('hidden');
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
         document.getElementById('user-display-email').innerText = user.email.split('@')[0];
+
+        // Se for admin, mostrar painel
+        if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          document.getElementById('admin-panel').classList.remove('hidden');
+          initAdminListener();
+        } else {
+          document.getElementById('admin-panel').classList.add('hidden');
+        }
+
         initFirebaseSync(user.uid);
+        initChatSync();
       } else {
-        appState = { budget: null, items: [], history: [] };
         document.getElementById('auth-screen').classList.remove('hidden');
         document.getElementById('main-app').classList.add('hidden');
       }
     });
 
+    // ADMIN: OUVIR NOVOS USUÁRIOS PENDENTES
+    function initAdminListener() {
+      unsubscribeAdmin = db.collection("aprovacoes").where("approved", "==", false).onSnapshot((snapshot) => {
+        const listEl = document.getElementById('pending-users-list');
+        const pendings = [];
+        snapshot.forEach(doc => pendings.push({ id: doc.id, ...doc.data() }));
+        
+        if (pendings.length === 0) {
+          listEl.innerHTML = `<p class="text-[10px] theme-text-muted italic">Nenhuma solicitação pendente.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = pendings.map(p => `
+          <div class="flex items-center justify-between bg-black/20 p-2 rounded-xl text-xs">
+            <span class="truncate pr-2">${p.email}</span>
+            <button onclick="approveUser('${p.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-bold shrink-0">Aprovar</button>
+          </div>
+        `).join('');
+      });
+    }
+
+    window.approveUser = async function(uid) {
+      await db.collection("aprovacoes").doc(uid).update({ approved: true });
+    };
+
     function initFirebaseSync(uid) {
       const docRef = db.collection("usuarios").doc(uid);
-      
       unsubscribeSync = docRef.onSnapshot((doc) => {
         if (doc.exists) {
           const data = doc.data();
@@ -571,6 +706,105 @@
       }, { merge: true });
     }
 
+    // CHAT EM TEMPO REAL COM STATUS DE LEITURA (DOIS CHECKS)
+    function initChatSync() {
+      const chatRef = db.collection("chat_mercado").orderBy("createdAt", "asc");
+      unsubscribeChat = chatRef.onSnapshot((snapshot) => {
+        const messages = [];
+        snapshot.forEach(doc => {
+          messages.push({ id: doc.id, ...doc.data() });
+        });
+        appState.chat = messages;
+        renderChat();
+      });
+    }
+
+    document.getElementById('chat-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text || !currentUser) return;
+
+      await db.collection("chat_mercado").add({
+        sender: currentUser.email.split('@')[0],
+        senderEmail: currentUser.email,
+        text: text,
+        read: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      input.value = '';
+    });
+
+    window.deleteChatMessage = async function(msgId) {
+      await db.collection("chat_mercado").doc(msgId).delete();
+    };
+
+    function renderChat() {
+      const chatList = document.getElementById('chat-messages');
+      const chatBadge = document.getElementById('chat-badge');
+      let unreadCount = 0;
+
+      if (appState.chat.length === 0) {
+        chatList.innerHTML = `<div class="h-full flex items-center justify-center theme-text-muted text-xs italic">Nenhuma mensagem ainda. Digite abaixo!</div>`;
+        chatBadge.classList.add('hidden');
+        return;
+      }
+
+      chatList.innerHTML = appState.chat.map(msg => {
+        const isMe = currentUser && msg.senderEmail === currentUser.email;
+        if (!isMe && !msg.read) unreadCount++;
+
+        // Marca como lida se a mensagem não for minha e estiver aberta no chat modal
+        if (!isMe && !msg.read && !document.getElementById('chat-modal').classList.contains('hidden')) {
+          db.collection("chat_mercado").doc(msg.id).update({ read: true });
+        }
+
+        // Ícone de Dois Checks do WhatsApp Colorido se lido
+        const checkColor = msg.read ? "text-cyan-400" : "text-slate-400";
+        const checksHtml = isMe ? `<span class="inline-flex ml-1 ${checkColor}" title="${msg.read ? 'Visualizado' : 'Enviado'}">✓✓</span>` : '';
+        const deleteBtn = isMe ? `<button onclick="deleteChatMessage('${msg.id}')" class="text-rose-400 hover:text-rose-500 ml-1 text-[10px]" title="Excluir"><i data-lucide="trash-2" class="w-3 h-3 inline"></i></button>` : '';
+
+        return `
+          <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+            <span class="text-[9px] theme-text-muted font-bold mb-0.5 px-1">${msg.sender}</span>
+            <div class="max-w-[80%] rounded-2xl px-3.5 py-2 text-xs shadow-sm border ${isMe ? 'theme-bg-accent text-white border-transparent' : 'theme-card border'}">
+              <p class="break-words">${msg.text}</p>
+              <div class="flex items-center justify-end gap-1 mt-1 text-[9px] opacity-80">
+                <span>${msg.createdAt ? new Date(msg.createdAt.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                ${checksHtml}
+                ${deleteBtn}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (unreadCount > 0 && document.getElementById('chat-modal').classList.contains('hidden')) {
+        chatBadge.innerText = unreadCount;
+        chatBadge.classList.remove('hidden');
+      } else {
+        chatBadge.classList.add('hidden');
+      }
+
+      chatList.scrollTop = chatList.scrollHeight;
+      lucide.createIcons();
+    }
+
+    // ABRIR / FECHAR CHAT
+    const chatModal = document.getElementById('chat-modal');
+    document.getElementById('btn-open-chat').addEventListener('click', () => {
+      chatModal.classList.remove('hidden');
+      // Marcar mensagens como lidas ao abrir
+      appState.chat.forEach(msg => {
+        if (currentUser && msg.senderEmail !== currentUser.email && !msg.read) {
+          db.collection("chat_mercado").doc(msg.id).update({ read: true });
+        }
+      });
+      renderChat();
+    });
+    document.getElementById('btn-close-chat').addEventListener('click', () => chatModal.classList.add('hidden'));
+
+    // CÁLCULOS E UI
     function calculateTotals() {
       const totalGasto = appState.items.reduce((acc, item) => acc + (item.price * item.qty), 0);
       let saldo = appState.budget !== null ? appState.budget - totalGasto : null;
@@ -627,19 +861,48 @@
       if (appState.history.length === 0) {
         historyList.innerHTML = `<p class="text-xs theme-text-muted italic py-2">Nenhuma compra arquivada.</p>`;
       } else {
-        historyList.innerHTML = appState.history.slice().reverse().map((h) => `
-          <div class="border-2 rounded-xl p-3 flex items-center justify-between shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <div>
-              <p class="text-xs font-bold">${h.date}</p>
-              <p class="text-[10px] theme-text-muted font-semibold">${h.itemCount} ${h.itemCount === 1 ? 'item' : 'itens'}</p>
+        historyList.innerHTML = appState.history.slice().reverse().map((h, revIdx) => {
+          const realIdx = appState.history.length - 1 - revIdx;
+          return `
+            <div onclick="openHistoryDetail(${realIdx})" class="border-2 rounded-xl p-3 flex items-center justify-between shadow-sm cursor-pointer hover:border-sky-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+              <div>
+                <p class="text-xs font-bold">${h.date}</p>
+                <p class="text-[10px] theme-text-muted font-semibold">${h.items.length} ${h.items.length === 1 ? 'item' : 'itens'} (Ver lista)</p>
+              </div>
+              <span class="text-xs font-black theme-accent">${formatCurrency(h.total)}</span>
             </div>
-            <span class="text-xs font-black theme-accent">${formatCurrency(h.total)}</span>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
 
       lucide.createIcons();
     }
+
+    // VISUALIZAR DETALHES DA LISTA NO HISTÓRICO
+    window.openHistoryDetail = function(index) {
+      const h = appState.history[index];
+      if (!h) return;
+
+      document.getElementById('history-detail-title').innerText = `Compra em ${h.date}`;
+      document.getElementById('history-detail-total').innerText = formatCurrency(h.total);
+
+      const itemsContainer = document.getElementById('history-detail-items');
+      itemsContainer.innerHTML = h.items.map(item => `
+        <div class="border rounded-xl p-2.5 flex items-center justify-between gap-2" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-bold truncate">${item.name || 'Item sem nome'}</p>
+            <p class="text-[10px] theme-text-muted">${formatCurrency(item.price)} x ${item.qty} un</p>
+          </div>
+          <span class="text-xs font-black">${formatCurrency(item.price * item.qty)}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('history-detail-modal').classList.remove('hidden');
+    };
+
+    document.getElementById('btn-close-history-modal').addEventListener('click', () => {
+      document.getElementById('history-detail-modal').classList.add('hidden');
+    });
 
     document.getElementById('add-item-form').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -706,6 +969,7 @@
       }
     });
 
+    // FINALIZAR E GUARDAR LISTA COMPLETA NO HISTÓRICO
     document.getElementById('btn-finish-shopping').addEventListener('click', () => {
       if (appState.items.length === 0) return;
       document.getElementById('confirm-finish-modal').classList.remove('hidden');
@@ -722,7 +986,7 @@
           id: Date.now().toString(),
           date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
           total: totalGasto,
-          itemCount: appState.items.length
+          items: [...appState.items] // Salva todos os itens da compra
         });
         appState.items = [];
         saveToFirestore();
