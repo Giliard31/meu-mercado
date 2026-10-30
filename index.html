@@ -20,12 +20,11 @@
         extend: {
           colors: {
             brand: {
-              50: '#f0fdf4',
-              500: '#22c55e',
-              600: '#16a34a',
-              700: '#15803d',
-              dark: '#0f172a',
-              card: '#1e293b'
+              main: 'var(--brand-main)',
+              hover: 'var(--brand-hover)',
+              light: 'var(--brand-light)',
+              bg: 'var(--brand-bg)',
+              border: 'var(--brand-border)',
             }
           }
         }
@@ -38,19 +37,48 @@
 
   <!-- Firebase SDKs v10.8.0 (Compat Mod) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- PWA Manifest Dinâmico via Data URI -->
+  <!-- PWA Manifest Dinâmico -->
   <link rel="manifest" id="manifest-placeholder">
 
   <style>
-    /* Desativa toques indesejados e rolagem de elástico em navegadores mobile */
+    /* Definições de Variáveis de Temas */
+    :root[data-theme="emerald"] {
+      --brand-main: #10b981;
+      --brand-hover: #059669;
+      --brand-light: #34d399;
+      --brand-bg: rgba(16, 185, 129, 0.1);
+      --brand-border: rgba(16, 185, 129, 0.3);
+    }
+    :root[data-theme="cyberpunk"] {
+      --brand-main: #06b6d4;
+      --brand-hover: #0891b2;
+      --brand-light: #22d3ee;
+      --brand-bg: rgba(6, 182, 212, 0.1);
+      --brand-border: rgba(6, 182, 212, 0.3);
+    }
+    :root[data-theme="purple"] {
+      --brand-main: #a855f7;
+      --brand-hover: #9333ea;
+      --brand-light: #c084fc;
+      --brand-bg: rgba(168, 85, 247, 0.1);
+      --brand-border: rgba(168, 85, 247, 0.3);
+    }
+    :root[data-theme="orange"] {
+      --brand-main: #f97316;
+      --brand-hover: #ea580c;
+      --brand-light: #fb923c;
+      --brand-bg: rgba(249, 115, 22, 0.1);
+      --brand-border: rgba(249, 115, 22, 0.3);
+    }
+
     body {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    /* Customização para scrollbar fina e discreta */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -61,22 +89,74 @@
       background: #334155;
       border-radius: 4px;
     }
+    .theme-accent {
+      color: var(--brand-main);
+    }
+    .theme-bg-accent {
+      background-color: var(--brand-main);
+    }
+    .theme-border-accent {
+      border-color: var(--brand-main);
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-hidden">
+<body data-theme="emerald" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-hidden">
 
   <!-- ================================================================= -->
-  <!-- MODAL INICIAL: PERGUNTA DE ORÇAMENTO                              -->
+  <!-- TELA DE AUTENTICAÇÃO (LOGIN / CADASTRO)                           -->
   <!-- ================================================================= -->
-  <div id="welcome-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+  <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
       
       <div class="flex flex-col items-center text-center mb-6">
-        <div class="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center justify-center text-emerald-400 mb-3 shadow-lg shadow-emerald-500/10">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center theme-accent mb-3 shadow-lg" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
           <i data-lucide="shopping-bag" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-bold text-slate-100">Meu Mercado 2.0</h2>
-        <p class="text-slate-400 text-sm mt-1">Quanto você tem para gastar no supermercado hoje?</p>
+        <p class="text-slate-400 text-sm mt-1" id="auth-subtitle">Entre para sincronizar com sua família</p>
+      </div>
+
+      <!-- Abas Login vs Cadastro -->
+      <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl mb-5 border border-slate-800">
+        <button id="tab-login" class="py-2 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
+        <button id="tab-register" class="py-2 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white">Cadastrar</button>
+      </div>
+
+      <form id="auth-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">E-mail</label>
+          <input type="email" id="auth-email" required placeholder="seu@email.com" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none theme-border-accent transition-colors">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Senha</label>
+          <input type="password" id="auth-password" required placeholder="••••••••" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none theme-border-accent transition-colors">
+        </div>
+
+        <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center"></p>
+
+        <button type="submit" id="btn-auth-submit" class="w-full text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg theme-bg-accent transition-all active:scale-[0.98]">
+          <i data-lucide="log-in" class="w-5 h-5"></i>
+          <span id="auth-btn-text">Entrar no App</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODAL DE ORÇAMENTO INICIAL                                         -->
+  <!-- ================================================================= -->
+  <div id="welcome-modal" class="fixed inset-0 z-40 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
+      
+      <div class="flex flex-col items-center text-center mb-6">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center theme-accent mb-3 shadow-lg" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
+          <i data-lucide="wallet" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-100">Definir Orçamento</h2>
+        <p class="text-slate-400 text-sm mt-1">Quanto você pretende gastar hoje?</p>
       </div>
 
       <div class="space-y-4">
@@ -84,12 +164,12 @@
           <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Valor Disponível (R$)</label>
           <div class="relative">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
-            <input type="number" id="initial-budget-input" step="0.01" placeholder="Ex: 150,00" 
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3.5 pl-12 pr-4 text-emerald-400 text-xl font-bold focus:outline-none focus:border-emerald-500 transition-colors">
+            <input type="number" id="initial-budget-input" step="0.01" placeholder="Ex: 200,00" 
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3.5 pl-12 pr-4 theme-accent text-xl font-bold focus:outline-none transition-colors">
           </div>
         </div>
 
-        <button id="btn-start-shopping" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all">
+        <button id="btn-start-shopping" class="w-full text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg theme-bg-accent transition-all active:scale-[0.98]">
           <i data-lucide="shopping-cart" class="w-5 h-5"></i>
           Começar as compras
         </button>
@@ -102,15 +182,15 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- BANNER DE INSTALAÇÃO PWA (SOLICITA INSTALAÇÃO NO CELULAR)        -->
+  <!-- BANNER DE INSTALAÇÃO PWA                                         -->
   <!-- ================================================================= -->
-  <div id="pwa-install-banner" class="hidden bg-emerald-600 text-white px-4 py-2.5 flex items-center justify-between text-xs sm:text-sm font-medium z-40 shadow-md">
+  <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-2.5 flex items-center justify-between text-xs sm:text-sm font-medium z-30 shadow-md">
     <div class="flex items-center gap-2">
       <i data-lucide="download" class="w-4 h-4"></i>
       <span>Instale o App na tela inicial!</span>
     </div>
     <div class="flex items-center gap-2">
-      <button id="btn-install-pwa" class="bg-slate-950 text-emerald-400 hover:bg-slate-900 px-3 py-1 rounded-lg text-xs font-bold transition-colors">
+      <button id="btn-install-pwa" class="bg-slate-950 theme-accent px-3 py-1 rounded-lg text-xs font-bold transition-colors">
         Instalar
       </button>
       <button id="btn-dismiss-pwa" class="text-white/70 hover:text-white p-1">
@@ -120,43 +200,38 @@
   </div>
 
   <!-- ================================================================= -->
-  <!-- TOPO FIXO (HEADER & DASHBOARD DE TOTAL E SALDO)                   -->
+  <!-- TOPO FIXO                                                        -->
   <!-- ================================================================= -->
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30 shadow-lg">
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-20 shadow-lg">
     <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
       
-      <!-- Botão Menu Gaveta (3 barrinhas) -->
       <button id="btn-open-drawer" class="p-2 -ml-2 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition-colors">
         <i data-lucide="menu" class="w-6 h-6"></i>
       </button>
 
-      <!-- Título Central -->
       <h1 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-        <i data-lucide="shopping-cart" class="w-5 h-5 text-emerald-500"></i>
+        <i data-lucide="shopping-cart" class="w-5 h-5 theme-accent"></i>
         Meu Mercado 2.0
       </h1>
 
-      <!-- Status Nuvem Firebase -->
-      <div id="sync-indicator" class="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-950/50 border border-emerald-800/50 px-2.5 py-1 rounded-full">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-[11px]">Nuvem</span>
+      <div id="sync-indicator" class="flex items-center gap-1.5 text-xs theme-accent font-medium px-2.5 py-1 rounded-full" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
+        <span class="w-2 h-2 rounded-full theme-bg-accent animate-pulse"></span>
+        <span class="text-[11px]" id="user-display-email">Conectado</span>
       </div>
     </div>
 
-    <!-- Painel Fixo de Valores (Total Comprado + Saldo Disponível) -->
+    <!-- Painel Fixo de Valores -->
     <div class="bg-slate-950/80 backdrop-blur border-t border-slate-800/60 py-3 px-4">
       <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
         
-        <!-- Total Gasto -->
         <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col">
           <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Total Comprado</span>
           <span id="display-total" class="text-xl font-black text-slate-100 mt-0.5">R$ 0,00</span>
         </div>
 
-        <!-- Saldo Restante -->
         <div id="card-saldo" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col transition-colors">
           <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Saldo Disponível</span>
-          <span id="display-balance" class="text-xl font-black text-emerald-400 mt-0.5">Ilimitado</span>
+          <span id="display-balance" class="text-xl font-black theme-accent mt-0.5">Ilimitado</span>
         </div>
 
       </div>
@@ -164,20 +239,19 @@
   </header>
 
   <!-- ================================================================= -->
-  <!-- MENU GAVETA LATERAL (DRAWER NA ESQUERDA)                          -->
+  <!-- MENU GAVETA LATERAL (DRAWER)                                     -->
   <!-- ================================================================= -->
-  <div id="drawer-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0"></div>
+  <div id="drawer-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
   
-  <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+  <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] bg-slate-900 border-r border-slate-800 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
     
-    <!-- Cabeçalho com Ícone de Carteira -->
     <div class="p-4 border-b border-slate-800 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+        <div class="p-2.5 rounded-xl theme-accent" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
           <i data-lucide="wallet" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 class="font-bold text-slate-100 text-sm">Carteira</h3>
+          <h3 class="font-bold text-slate-100 text-sm">Minha Carteira</h3>
           <p id="drawer-budget-text" class="text-xs text-slate-400">Teto: Não definido</p>
         </div>
       </div>
@@ -186,64 +260,82 @@
       </button>
     </div>
 
-    <!-- Opções da Gaveta e Histórico Persistente -->
     <div class="flex-1 overflow-y-auto p-4 space-y-6">
       
-      <!-- Alterar Saldo -->
+      <!-- Seletor de Temas (Troca de Cores) -->
+      <div>
+        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
+        <div class="grid grid-cols-4 gap-2">
+          <button onclick="setTheme('emerald')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-emerald-500 transition-colors">
+            <span class="w-5 h-5 rounded-full bg-emerald-500"></span>
+            <span class="text-[9px] font-bold text-slate-400">Verde</span>
+          </button>
+          <button onclick="setTheme('cyberpunk')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-cyan-500 transition-colors">
+            <span class="w-5 h-5 rounded-full bg-cyan-500"></span>
+            <span class="text-[9px] font-bold text-slate-400">Azul</span>
+          </button>
+          <button onclick="setTheme('purple')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-purple-500 transition-colors">
+            <span class="w-5 h-5 rounded-full bg-purple-500"></span>
+            <span class="text-[9px] font-bold text-slate-400">Roxo</span>
+          </button>
+          <button onclick="setTheme('orange')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-orange-500 transition-colors">
+            <span class="w-5 h-5 rounded-full bg-orange-500"></span>
+            <span class="text-[9px] font-bold text-slate-400">Laranja</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Alterar Orçamento -->
       <div>
         <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Configurações</h4>
         <button id="btn-edit-budget" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-between border border-slate-700 transition-colors">
           <span class="flex items-center gap-2">
-            <i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i>
+            <i data-lucide="edit-3" class="w-4 h-4 theme-accent"></i>
             Redefinir Limite de Gastos
           </span>
           <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
         </button>
       </div>
 
-      <!-- Histórico de Compras Anteriores -->
+      <!-- Histórico -->
       <div>
         <div class="flex items-center justify-between mb-3">
           <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Histórico de Compras</h4>
           <span id="history-count" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold">0</span>
         </div>
         
-        <div id="history-list" class="space-y-2">
-          <!-- Inserido dinamicamente pelo JS -->
-        </div>
+        <div id="history-list" class="space-y-2"></div>
       </div>
 
     </div>
 
-    <!-- Rodapé do Menu -->
-    <div class="p-4 border-t border-slate-800 text-center">
-      <p class="text-[10px] text-slate-500">Meu Mercado 2.0 • Sincronização Ativa</p>
+    <!-- Rodapé com Logout -->
+    <div class="p-4 border-t border-slate-800 flex items-center justify-between">
+      <span class="text-[10px] text-slate-500">Meu Mercado 2.0</span>
+      <button id="btn-logout" class="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1">
+        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sair
+      </button>
     </div>
   </aside>
 
   <!-- ================================================================= -->
-  <!-- CORPO DA PÁGINA (FORMULÁRIO DE ENTRADA E LISTA DO CARRINHO)       -->
+  <!-- CORPO DA PÁGINA                                                   -->
   <!-- ================================================================= -->
   <main class="flex-1 max-w-md mx-auto w-full p-4 flex flex-col gap-4 overflow-y-auto">
     
-    <!-- Campos de Entrada (Nome opcional, Preço Unitário e Quantidade) -->
     <form id="add-item-form" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
-      
-      <!-- Nome do Item (Opcional) -->
       <div>
         <input type="text" id="item-name" placeholder="Adicionar o nome do item (opcional)" 
-          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors">
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none theme-border-accent transition-colors">
       </div>
 
-      <!-- Valor Unitário e Botões de Quantidade -->
       <div class="grid grid-cols-12 gap-2">
         <div class="col-span-7 relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-bold">R$</span>
           <input type="number" id="item-price" step="0.01" min="0" placeholder="0,00" required
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-100 font-bold placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors">
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-100 font-bold placeholder-slate-600 focus:outline-none theme-border-accent transition-colors">
         </div>
 
-        <!-- Seletor de Quantidade -->
         <div class="col-span-5 flex items-center bg-slate-950 border border-slate-800 rounded-xl px-1">
           <button type="button" id="btn-qty-minus" class="p-2 text-slate-400 hover:text-white active:scale-90 transition-transform">
             <i data-lucide="minus" class="w-4 h-4"></i>
@@ -256,106 +348,72 @@
         </div>
       </div>
 
-      <!-- Botão Adicionar à Lista -->
-      <button type="submit" id="btn-add-item" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all">
+      <button type="submit" id="btn-add-item" class="w-full text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md theme-bg-accent transition-all active:scale-[0.98]">
         <i data-lucide="plus-circle" class="w-5 h-5"></i>
         <span>Adicionar à lista</span>
       </button>
     </form>
 
-    <!-- Lista Estilo Carrinho de Mercado -->
     <div class="flex-1 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md overflow-hidden">
-      
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
         <div class="flex items-center gap-2">
-          <i data-lucide="list-checks" class="w-4 h-4 text-emerald-400"></i>
+          <i data-lucide="list-checks" class="w-4 h-4 theme-accent"></i>
           <h2 class="font-bold text-slate-200 text-sm">Carrinho Atual</h2>
         </div>
         <span id="items-count-badge" class="text-xs bg-slate-800 text-slate-300 font-semibold px-2 py-0.5 rounded-full">0 itens</span>
       </div>
 
-      <!-- Lista Rola-vel de Itens Comprados -->
-      <div id="cart-list" class="flex-1 overflow-y-auto py-3 space-y-2.5">
-        <!-- Renderizado dinamicamente -->
-      </div>
+      <div id="cart-list" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
 
-      <!-- Botão para Finalizar e Salvar no Histórico -->
       <div class="pt-3 border-t border-slate-800">
-        <button id="btn-finish-shopping" class="w-full bg-slate-800 hover:bg-emerald-600 hover:text-white text-slate-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition-colors">
+        <button id="btn-finish-shopping" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition-colors">
           <i data-lucide="check-circle" class="w-5 h-5"></i>
           Finalizar Compra
         </button>
       </div>
-
     </div>
 
   </main>
 
-  <!-- ================================================================= -->
-  <!-- MODAL DE ALERTA: SALDO ACABANDO (< R$ 10,00)                     -->
-  <!-- ================================================================= -->
+  <!-- MODAL ALERTA -->
   <div id="alert-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-rose-500/40 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
-      
       <div class="w-14 h-14 bg-rose-500/20 border border-rose-500/40 rounded-full flex items-center justify-center text-rose-400 mx-auto">
         <i data-lucide="alert-triangle" class="w-8 h-8"></i>
       </div>
-
       <div>
         <h3 class="text-xl font-bold text-slate-100">Atenção!</h3>
-        <p class="text-rose-400 font-semibold text-sm mt-1">O seu saldo está acabando!</p>
-        <p id="alert-modal-text" class="text-slate-400 text-xs mt-2">Restam menos de R$ 10,00 no seu limite disponível.</p>
+        <p class="text-rose-400 font-semibold text-sm mt-1">Seu saldo está acabando!</p>
+        <p id="alert-modal-text" class="text-slate-400 text-xs mt-2">Restam menos de R$ 10,00 no seu limite.</p>
       </div>
-
       <div class="grid grid-cols-2 gap-3 pt-2">
-        <button id="btn-alert-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">
-          Parar
-        </button>
-        <button id="btn-alert-continue" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">
-          Continuar
-        </button>
+        <button id="btn-alert-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">Parar</button>
+        <button id="btn-alert-continue" class="theme-bg-accent text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">Continuar</button>
       </div>
-
     </div>
   </div>
 
-  <!-- ================================================================= -->
-  <!-- MODAL DE CONFIRMAÇÃO PARA FINALIZAR COMPRA                        -->
-  <!-- ================================================================= -->
+  <!-- MODAL FINALIZAR -->
   <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
-      
-      <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-full flex items-center justify-center text-emerald-400 mx-auto">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center theme-accent mx-auto" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
         <i data-lucide="archive" class="w-6 h-6"></i>
       </div>
-
       <div>
-        <h3 class="text-lg font-bold text-slate-100">Deseja excluir esta lista da tela principal?</h3>
-        <p class="text-slate-400 text-xs mt-1">
-          A lista da tela principal será limpa, mas o valor total será guardado com sucesso no seu **Histórico**.
-        </p>
+        <h3 class="text-lg font-bold text-slate-100">Finalizar e Arquivar?</h3>
+        <p class="text-slate-400 text-xs mt-1">A lista principal será limpa e salva no seu Histórico.</p>
       </div>
-
       <div class="grid grid-cols-2 gap-3 pt-2">
-        <button id="btn-cancel-finish" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">
-          Cancelar
-        </button>
-        <button id="btn-confirm-finish" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">
-          Sim, Arquivar
-        </button>
+        <button id="btn-cancel-finish" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">Cancelar</button>
+        <button id="btn-confirm-finish" class="theme-bg-accent text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">Sim, Arquivar</button>
       </div>
-
     </div>
   </div>
 
-  <!-- ================================================================= -->
-  <!-- SCRIPTS & LOGICA DO APLICATIVO                                    -->
-  <!-- ================================================================= -->
+  <!-- SCRIPTS -->
   <script>
-    // 1. Inicialização dos Ícones
     lucide.createIcons();
 
-    // 2. Credenciais do Firebase Firestore
     const firebaseConfig = {
       apiKey: "AIzaSyDAiW612rePMhsup_R30pM9py2VZsghP2Y",
       authDomain: "meu-mercado-555b8.firebaseapp.com",
@@ -367,79 +425,87 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.firestore();
     db.settings({ experimentalForceLongPolling: true });
 
-    // Documento compartilhado para sincronização em tempo real entre dois aparelhos
-    const docRef = db.collection("mercado").doc("sessao_atual");
+    let currentUser = null;
+    let unsubscribeSync = null;
 
-    // 3. Estado Global
     let appState = {
       budget: null,
       items: [],
       history: []
     };
 
-    // 4. Configuração PWA (Instalação e Service Worker)
-    function setupPWA() {
-      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-        <rect width="512" height="512" rx="128" fill="#0f172a"/>
-        <path d="M160 128h192l32 160H128l32-160z" fill="#10b981"/>
-        <path d="M128 288h256l-24 112H152l-24-112z" fill="#059669"/>
-        <circle cx="176" cy="432" r="32" fill="#34d399"/>
-        <circle cx="336" cy="432" r="32" fill="#34d399"/>
-      </svg>`;
-
-      const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
-
-      const manifestData = {
-        name: "Meu Mercado 2.0",
-        short_name: "Mercado 2.0",
-        start_url: "./",
-        display: "standalone",
-        background_color: "#0f172a",
-        theme_color: "#0f172a",
-        icons: [
-          { src: iconUrl, sizes: "192x192 512x512", type: "image/svg+xml" }
-        ]
-      };
-
-      const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
-      document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
-
-      if ('serviceWorker' in navigator) {
-        const swCode = `
-          self.addEventListener('install', e => self.skipWaiting());
-          self.addEventListener('activate', e => e.waitUntil(clients.claim()));
-          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-        `;
-        const swBlob = new Blob([swCode], { type: 'text/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
-      }
+    // TROCA DE TEMA (LAYOUT/CORES)
+    function setTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('selected_theme', themeName);
     }
+    const savedTheme = localStorage.getItem('selected_theme') || 'emerald';
+    setTheme(savedTheme);
 
-    let deferredPrompt = null;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('pwa-install-banner').classList.remove('hidden');
+    // GERENCIAMENTO DE AUTENTICAÇÃO
+    let authMode = 'login';
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+
+    tabLogin.addEventListener('click', () => {
+      authMode = 'login';
+      tabLogin.className = "py-2 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
+      tabRegister.className = "py-2 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white";
+      document.getElementById('auth-btn-text').innerText = "Entrar no App";
+      document.getElementById('auth-subtitle').innerText = "Entre para sincronizar com sua família";
     });
 
-    document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt = null;
-        document.getElementById('pwa-install-banner').classList.add('hidden');
+    tabRegister.addEventListener('click', () => {
+      authMode = 'register';
+      tabRegister.className = "py-2 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
+      tabLogin.className = "py-2 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white";
+      document.getElementById('auth-btn-text').innerText = "Criar Minha Conta";
+      document.getElementById('auth-subtitle').innerText = "Crie uma conta para usar em vários celulares";
+    });
+
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const errEl = document.getElementById('auth-error');
+      errEl.classList.add('hidden');
+
+      try {
+        if (authMode === 'login') {
+          await auth.signInWithEmailAndPassword(email, password);
+        } else {
+          await auth.createUserWithEmailAndPassword(email, password);
+        }
+      } catch (err) {
+        errEl.innerText = err.message;
+        errEl.classList.remove('hidden');
       }
     });
 
-    document.getElementById('btn-dismiss-pwa')?.addEventListener('click', () => {
-      document.getElementById('pwa-install-banner').classList.add('hidden');
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      auth.signOut();
     });
 
-    // 5. Escuta em Tempo Real do Firebase
-    function initFirebaseSync() {
-      docRef.onSnapshot((doc) => {
+    auth.onAuthStateChanged((user) => {
+      currentUser = user;
+      if (user) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('user-display-email').innerText = user.email.split('@')[0];
+        initFirebaseSync(user.uid);
+      } else {
+        document.getElementById('auth-screen').classList.remove('hidden');
+        if (unsubscribeSync) unsubscribeSync();
+      }
+    });
+
+    function initFirebaseSync(uid) {
+      const docRef = db.collection("usuarios").doc(uid);
+      
+      unsubscribeSync = docRef.onSnapshot((doc) => {
         if (doc.exists) {
           const data = doc.data();
           appState.budget = data.budget !== undefined ? data.budget : null;
@@ -453,7 +519,8 @@
     }
 
     function saveToFirestore() {
-      docRef.set({
+      if (!currentUser) return;
+      db.collection("usuarios").doc(currentUser.uid).set({
         budget: appState.budget,
         items: appState.items,
         history: appState.history,
@@ -461,27 +528,10 @@
       }, { merge: true });
     }
 
-    // 6. Funções de Cálculo
     function calculateTotals() {
       const totalGasto = appState.items.reduce((acc, item) => acc + (item.price * item.qty), 0);
-      let saldo = null;
-      if (appState.budget !== null) {
-        saldo = appState.budget - totalGasto;
-      }
+      let saldo = appState.budget !== null ? appState.budget - totalGasto : null;
       return { totalGasto, saldo };
-    }
-
-    function checkBudgetAlert(currentTotal) {
-      if (appState.budget !== null) {
-        const saldo = appState.budget - currentTotal;
-        if (saldo <= 10 && saldo >= 0) {
-          document.getElementById('alert-modal-text').innerText = `Restam apenas ${formatCurrency(saldo)} do seu limite total de ${formatCurrency(appState.budget)}.`;
-          document.getElementById('alert-modal').classList.remove('hidden');
-        } else if (saldo < 0) {
-          document.getElementById('alert-modal-text').innerText = `Você ultrapassou o seu limite em ${formatCurrency(Math.abs(saldo))}!`;
-          document.getElementById('alert-modal').classList.remove('hidden');
-        }
-      }
     }
 
     function formatCurrency(val) {
@@ -489,78 +539,48 @@
       return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    // 7. Renderização da Interface
     function renderUI() {
       const { totalGasto, saldo } = calculateTotals();
 
-      // Modal de Início
       if (appState.budget === null && appState.items.length === 0 && !localStorage.getItem('welcome_seen')) {
         document.getElementById('welcome-modal').classList.remove('hidden');
       } else {
         document.getElementById('welcome-modal').classList.add('hidden');
       }
 
-      // Atualiza Valores da Barra Fixa
       document.getElementById('display-total').innerText = formatCurrency(totalGasto);
-      
       const balanceEl = document.getElementById('display-balance');
-      const cardSaldo = document.getElementById('card-saldo');
 
       if (saldo === null) {
         balanceEl.innerText = "Ilimitado";
         balanceEl.className = "text-xl font-black text-slate-400 mt-0.5";
-        cardSaldo.className = "bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col";
       } else {
         balanceEl.innerText = formatCurrency(saldo);
-        if (saldo < 0) {
-          balanceEl.className = "text-xl font-black text-rose-500 mt-0.5";
-          cardSaldo.className = "bg-rose-950/20 border border-rose-500/30 rounded-xl p-3 flex flex-col";
-        } else if (saldo <= 10) {
-          balanceEl.className = "text-xl font-black text-amber-400 mt-0.5";
-          cardSaldo.className = "bg-amber-950/20 border border-amber-500/30 rounded-xl p-3 flex flex-col";
-        } else {
-          balanceEl.className = "text-xl font-black text-emerald-400 mt-0.5";
-          cardSaldo.className = "bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col";
-        }
+        balanceEl.className = saldo < 0 ? "text-xl font-black text-rose-500 mt-0.5" : "text-xl font-black theme-accent mt-0.5";
       }
 
-      // Atualiza Gaveta
-      document.getElementById('drawer-budget-text').innerText = appState.budget !== null 
-        ? `Teto: ${formatCurrency(appState.budget)}` 
-        : 'Teto: Não definido';
+      document.getElementById('drawer-budget-text').innerText = appState.budget !== null ? `Teto: ${formatCurrency(appState.budget)}` : 'Teto: Não definido';
 
-      // Renderiza Lista de Compras
       const cartList = document.getElementById('cart-list');
       document.getElementById('items-count-badge').innerText = `${appState.items.length} ${appState.items.length === 1 ? 'item' : 'itens'}`;
 
       if (appState.items.length === 0) {
-        cartList.innerHTML = `
-          <div class="h-full flex flex-col items-center justify-center text-center py-8 text-slate-500">
-            <i data-lucide="shopping-bag" class="w-10 h-10 mb-2 opacity-40"></i>
-            <p class="text-xs">Sua lista está vazia.</p>
-            <p class="text-[10px] text-slate-600 mt-0.5">Informe o valor dos produtos acima.</p>
-          </div>
-        `;
+        cartList.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center py-8 text-slate-500"><p class="text-xs">Sua lista está vazia.</p></div>`;
       } else {
         cartList.innerHTML = appState.items.map((item, index) => `
-          <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm">
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm">
             <div class="flex-1 min-w-0">
               <p class="text-xs font-semibold text-slate-200 truncate">${item.name || 'Item sem nome'}</p>
-              <p class="text-[11px] text-slate-400 mt-0.5">
-                <span class="text-emerald-400 font-bold">${formatCurrency(item.price)}</span> x ${item.qty} un
-              </p>
+              <p class="text-[11px] text-slate-400 mt-0.5"><span class="theme-accent font-bold">${formatCurrency(item.price)}</span> x ${item.qty} un</p>
             </div>
             <div class="flex items-center gap-2">
               <span class="text-sm font-black text-slate-100">${formatCurrency(item.price * item.qty)}</span>
-              <button onclick="removeItem(${index})" class="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg active:bg-slate-900 transition-colors">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-              </button>
+              <button onclick="removeItem(${index})" class="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg active:bg-slate-900"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </div>
           </div>
         `).join('');
       }
 
-      // Renderiza Histórico na Carteira
       const historyList = document.getElementById('history-list');
       document.getElementById('history-count').innerText = appState.history.length;
 
@@ -573,7 +593,7 @@
               <p class="text-xs font-semibold text-slate-300">${h.date}</p>
               <p class="text-[10px] text-slate-500">${h.itemCount} ${h.itemCount === 1 ? 'item' : 'itens'}</p>
             </div>
-            <span class="text-xs font-bold text-emerald-400">${formatCurrency(h.total)}</span>
+            <span class="text-xs font-bold theme-accent">${formatCurrency(h.total)}</span>
           </div>
         `).join('');
       }
@@ -581,7 +601,7 @@
       lucide.createIcons();
     }
 
-    // 8. Handlers de Eventos
+    // Ações de Eventos
     document.getElementById('btn-start-shopping').addEventListener('click', () => {
       const val = parseFloat(document.getElementById('initial-budget-input').value);
       if (!isNaN(val) && val > 0) appState.budget = val;
@@ -599,38 +619,22 @@
 
     document.getElementById('add-item-form').addEventListener('submit', (e) => {
       e.preventDefault();
-
       const nameInput = document.getElementById('item-name');
       const priceInput = document.getElementById('item-price');
       const qtyInput = document.getElementById('item-qty');
 
       const price = parseFloat(priceInput.value);
       const qty = parseInt(qtyInput.value) || 1;
-      const name = nameInput.value.trim();
 
       if (isNaN(price) || price <= 0) return;
 
-      appState.items.push({ id: Date.now().toString(), name, price, qty });
-
-      // Animação/Mudança de cor no botão ao adicionar
-      const btnAdd = document.getElementById('btn-add-item');
-      btnAdd.classList.remove('bg-emerald-600');
-      btnAdd.classList.add('bg-emerald-500', 'scale-[0.98]');
-      setTimeout(() => {
-        btnAdd.classList.remove('bg-emerald-500', 'scale-[0.98]');
-        btnAdd.classList.add('bg-emerald-600');
-      }, 180);
-
-      // Limpa para a próxima entrada rápida
+      appState.items.push({ id: Date.now().toString(), name: nameInput.value.trim(), price, qty });
       nameInput.value = '';
       priceInput.value = '';
       qtyInput.value = '1';
       priceInput.focus();
 
       saveToFirestore();
-
-      const { totalGasto } = calculateTotals();
-      checkBudgetAlert(totalGasto);
     });
 
     document.getElementById('btn-qty-minus').addEventListener('click', () => {
@@ -641,8 +645,7 @@
 
     document.getElementById('btn-qty-plus').addEventListener('click', () => {
       const input = document.getElementById('item-qty');
-      let val = parseInt(input.value) || 1;
-      input.value = val + 1;
+      input.value = (parseInt(input.value) || 1) + 1;
     });
 
     window.removeItem = function(index) {
@@ -650,34 +653,28 @@
       saveToFirestore();
     };
 
-    // Controle da Gaveta
+    // Gaveta
     const drawer = document.getElementById('drawer');
     const backdrop = document.getElementById('drawer-backdrop');
 
-    function openDrawer() {
+    document.getElementById('btn-open-drawer').addEventListener('click', () => {
       backdrop.classList.remove('hidden');
-      setTimeout(() => {
-        backdrop.classList.remove('opacity-0');
-        drawer.classList.remove('-translate-x-full');
-      }, 10);
-    }
+      setTimeout(() => { backdrop.classList.remove('opacity-0'); drawer.classList.remove('-translate-x-full'); }, 10);
+    });
 
     function closeDrawer() {
       drawer.classList.add('-translate-x-full');
       backdrop.classList.add('opacity-0');
-      setTimeout(() => {
-        backdrop.classList.add('hidden');
-      }, 300);
+      setTimeout(() => backdrop.classList.add('hidden'), 300);
     }
 
-    document.getElementById('btn-open-drawer').addEventListener('click', openDrawer);
     document.getElementById('btn-close-drawer').addEventListener('click', closeDrawer);
     backdrop.addEventListener('click', closeDrawer);
 
     document.getElementById('btn-edit-budget').addEventListener('click', () => {
       closeDrawer();
       const current = appState.budget !== null ? appState.budget : '';
-      const newVal = prompt("Informe o novo limite para suas compras (R$):", current);
+      const newVal = prompt("Digite o novo limite (R$):", current);
       if (newVal !== null) {
         const parsed = parseFloat(newVal.replace(',', '.'));
         appState.budget = !isNaN(parsed) && parsed > 0 ? parsed : null;
@@ -685,7 +682,6 @@
       }
     });
 
-    // Finalizar Compras
     document.getElementById('btn-finish-shopping').addEventListener('click', () => {
       if (appState.items.length === 0) return;
       document.getElementById('confirm-finish-modal').classList.remove('hidden');
@@ -697,33 +693,21 @@
 
     document.getElementById('btn-confirm-finish').addEventListener('click', () => {
       const { totalGasto } = calculateTotals();
-      
       if (appState.items.length > 0) {
         appState.history.push({
           id: Date.now().toString(),
-          date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }),
+          date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
           total: totalGasto,
           itemCount: appState.items.length
         });
         appState.items = [];
         saveToFirestore();
       }
-
       document.getElementById('confirm-finish-modal').classList.add('hidden');
     });
 
-    // Fechar Alertas
-    document.getElementById('btn-alert-continue').addEventListener('click', () => {
-      document.getElementById('alert-modal').classList.add('hidden');
-    });
-    
-    document.getElementById('btn-alert-stop').addEventListener('click', () => {
-      document.getElementById('alert-modal').classList.add('hidden');
-    });
-
-    // Execução Inicial
-    setupPWA();
-    initFirebaseSync();
+    document.getElementById('btn-alert-continue').addEventListener('click', () => document.getElementById('alert-modal').classList.add('hidden'));
+    document.getElementById('btn-alert-stop').addEventListener('click', () => document.getElementById('alert-modal').classList.add('hidden'));
   </script>
 </body>
 </html>
