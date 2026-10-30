@@ -409,6 +409,22 @@
     </div>
   </aside>
 
+  <!-- MODAL DE ALERTA DE SALDO (R$ 15 / R$ 5 / ESTOURO) -->
+  <div id="budget-alert-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
+      <div id="alert-icon-box" class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto shadow-md bg-amber-500/20 border-2 border-amber-500/40 text-amber-400">
+        <i data-lucide="alert-triangle" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <h3 id="alert-title" class="text-lg font-bold">Atenção ao Saldo</h3>
+        <p id="alert-message" class="theme-text-muted text-xs font-medium mt-1.5">Seu saldo está acabando.</p>
+      </div>
+      <div id="alert-buttons" class="grid grid-cols-2 gap-3 pt-2">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL DEFINIR LIMITE -->
   <div id="budget-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-5 shadow-2xl space-y-4">
@@ -498,7 +514,6 @@
       chat: []
     };
 
-    // E-MAIL DE ADMIN ATUALIZADO
     const ADMIN_EMAIL = "giliardmartins@gmail.com";
 
     function setTheme(themeName) {
@@ -507,7 +522,6 @@
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
-    // SETUP PWA INTELIGENTE (VERIFICA SE JÁ ESTÁ INSTALADO PARA NÃO PEDIR DE NOVO)
     function setupPWA() {
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
         <rect width="512" height="512" rx="128" fill="#0284c7"/>
@@ -905,6 +919,117 @@
       document.getElementById('history-detail-modal').classList.add('hidden');
     });
 
+    // SISTEMA DE VERIFICAÇÃO DE SALDO E ALERTAS PROGRESSIVOS
+    let alertModalState = null; // Guarda os dados do item pendente se houver alerta
+
+    function checkBudgetAndAddItem(newItem) {
+      if (appState.budget === null) {
+        // Sem teto definido, adiciona direto
+        appState.items.push(newItem);
+        saveAndResetForm(newItem);
+        return;
+      }
+
+      const { totalGasto } = calculateTotals();
+      const novoTotal = totalGasto + (newItem.price * newItem.qty);
+      const saldoRestanteAntes = appState.budget - totalGasto;
+      const saldoRestanteDepois = appState.budget - novoTotal;
+
+      // Se estourar o limite
+      if (novoTotal > appState.budget) {
+        showBudgetAlert(
+          "Limite Estourado!",
+          `Este item vai estourar o limite da sua carteira em ${formatCurrency(Math.abs(saldoRestanteDepois))}. Deseja deixar estourar e continuar comprando?`,
+          "Deixar Estourar",
+          () => {
+            appState.items.push(newItem);
+            saveAndResetForm(newItem);
+            document.getElementById('budget-alert-modal').classList.add('hidden');
+          },
+          "Atualizar Teto",
+          () => {
+            document.getElementById('budget-alert-modal').classList.add('hidden');
+            openBudgetModal();
+          },
+          "text-rose-500 bg-rose-500/20 border-rose-500/40"
+        );
+        return;
+      }
+
+      // Se entrar na faixa de R$ 5,00 restantes (e antes não estava ou estava acima)
+      if (saldoRestanteDepois <= 5.00 && saldoRestanteAntes > 5.00) {
+        showBudgetAlert(
+          "Atenção Crítica!",
+          `Faltam apenas ${formatCurrency(saldoRestanteDepois)} para o seu saldo acabar! Deseja continuar?`,
+          "Sim, Continuar",
+          () => {
+            appState.items.push(newItem);
+            saveAndResetForm(newItem);
+            document.getElementById('budget-alert-modal').classList.add('hidden');
+          },
+          "Atualizar Teto",
+          () => {
+            document.getElementById('budget-alert-modal').classList.add('hidden');
+            openBudgetModal();
+          },
+          "text-amber-400 bg-amber-500/20 border-amber-500/40"
+        );
+        return;
+      }
+
+      // Se entrar na faixa de R$ 15,00 restantes (e antes não estava ou estava acima)
+      if (saldoRestanteDepois <= 15.00 && saldoRestanteAntes > 15.00) {
+        showBudgetAlert(
+          "Aviso de Saldo Baixo",
+          `Faltam ${formatCurrency(saldoRestanteDepois)} para acabar o seu limite. Deseja continuar?`,
+          "Sim, Continuar",
+          () => {
+            appState.items.push(newItem);
+            saveAndResetForm(newItem);
+            document.getElementById('budget-alert-modal').classList.add('hidden');
+          },
+          "Atualizar Teto",
+          () => {
+            document.getElementById('budget-alert-modal').classList.add('hidden');
+            openBudgetModal();
+          },
+          "text-sky-400 bg-sky-500/20 border-sky-500/40"
+        );
+        return;
+      }
+
+      // Caso normal sem alertas
+      appState.items.push(newItem);
+      saveAndResetForm(newItem);
+    }
+
+    function showBudgetAlert(title, message, btnTextPrimary, onPrimary, btnTextSecondary, onSecondary, iconStyleClass) {
+      document.getElementById('alert-title').innerText = title;
+      document.getElementById('alert-message').innerText = message;
+      
+      const iconBox = document.getElementById('alert-icon-box');
+      iconBox.className = `w-14 h-14 rounded-2xl flex items-center justify-center mx-auto shadow-md border-2 ${iconStyleClass}`;
+
+      const buttonsContainer = document.getElementById('alert-buttons');
+      buttonsContainer.innerHTML = `
+        <button id="alert-btn-sec" class="border-2 text-xs font-bold py-3 rounded-xl transition-colors shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">${btnTextSecondary}</button>
+        <button id="alert-btn-pri" class="theme-bg-accent text-white text-xs font-bold py-3 rounded-xl shadow-lg transition-colors">${btnTextPrimary}</button>
+      `;
+
+      document.getElementById('alert-btn-pri').onclick = onPrimary;
+      document.getElementById('alert-btn-sec').onclick = onSecondary;
+
+      document.getElementById('budget-alert-modal').classList.remove('hidden');
+    }
+
+    function saveAndResetForm(newItem) {
+      document.getElementById('item-name').value = '';
+      document.getElementById('item-price').value = '';
+      document.getElementById('item-qty').value = '1';
+      document.getElementById('item-price').focus();
+      saveToFirestore();
+    }
+
     document.getElementById('add-item-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const nameInput = document.getElementById('item-name');
@@ -916,14 +1041,8 @@
 
       if (isNaN(price) || price <= 0) return;
 
-      appState.items.push({ id: Date.now().toString(), name: nameInput.value.trim(), price, qty });
-      
-      nameInput.value = '';
-      priceInput.value = '';
-      qtyInput.value = '1';
-      priceInput.focus();
-
-      saveToFirestore();
+      const newItem = { id: Date.now().toString(), name: nameInput.value.trim(), price, qty };
+      checkBudgetAndAddItem(newItem);
     });
 
     document.getElementById('btn-qty-minus').addEventListener('click', () => {
@@ -959,11 +1078,16 @@
     document.getElementById('btn-close-drawer').addEventListener('click', closeDrawer);
     backdrop.addEventListener('click', closeDrawer);
 
+    // MODAL DE EDITAR LIMITE
     const budgetModal = document.getElementById('budget-modal');
-    document.getElementById('btn-edit-budget').addEventListener('click', () => {
-      closeDrawer();
+    function openBudgetModal() {
       document.getElementById('budget-input').value = appState.budget !== null ? appState.budget : '';
       budgetModal.classList.remove('hidden');
+    }
+
+    document.getElementById('btn-edit-budget').addEventListener('click', () => {
+      closeDrawer();
+      openBudgetModal();
     });
 
     document.getElementById('btn-cancel-budget').addEventListener('click', () => {
