@@ -47,9 +47,9 @@
     :root[data-theme="light"] {
       --bg-page: #f8fafc;
       --bg-card: #ffffff;
-      --bg-card-border: #e2e8f0;
+      --bg-card-border: #cbd5e1;
       --text-main: #0f172a;
-      --text-muted: #64748b;
+      --text-muted: #475569;
       --brand-main: #0284c7;
       --brand-hover: #0369a1;
       --brand-light: #38bdf8;
@@ -85,10 +85,10 @@
       --bg-card: #2e1065;
       --bg-card-border: #3b0764;
       --text-main: #f8fafc;
-      --text-muted: #a78bfa;
+      --text-muted: #c084fc;
       --brand-main: #a855f7;
       --brand-hover: #9333ea;
-      --brand-light: #c084fc;
+      --brand-light: #d8b4fe;
       --brand-bg: rgba(168, 85, 247, 0.15);
       --brand-border: rgba(168, 85, 247, 0.35);
     }
@@ -122,7 +122,7 @@
 
     .theme-text-muted { color: var(--text-muted); }
 
-    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg-page); }
     ::-webkit-scrollbar-thumb { background: var(--bg-card-border); border-radius: 4px; }
     .theme-accent { color: var(--brand-main); }
@@ -136,37 +136,37 @@
   <!-- TELA DE AUTENTICAÇÃO                                             -->
   <!-- ================================================================= -->
   <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: var(--bg-page);">
-    <div class="theme-card border w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
+    <div class="theme-card border-2 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
       
       <div class="flex flex-col items-center text-center mb-6">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center theme-accent mb-3 shadow-lg" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center theme-accent mb-3 shadow-lg" style="background: var(--brand-bg); border: 2px solid var(--brand-border);">
           <i data-lucide="shopping-bag" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-bold">Meu Mercado 2.0</h2>
         <p class="theme-text-muted text-sm mt-1" id="auth-subtitle">Entre com sua conta para sincronizar</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-2 p-1 rounded-xl mb-5 border" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-        <button id="tab-login" type="button" class="py-2.5 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
-        <button id="tab-register" type="button" class="py-2.5 text-xs font-bold rounded-lg transition-colors theme-text-muted hover:text-current">Criar Conta</button>
+      <div class="grid grid-cols-2 gap-2 p-1.5 rounded-xl mb-5 border-2" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+        <button id="tab-login" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
+        <button id="tab-register" type="button" class="py-3 text-sm font-bold rounded-lg transition-colors theme-text-muted hover:text-current">Criar Conta</button>
       </div>
 
       <form id="auth-form" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold theme-text-muted uppercase tracking-wider mb-1.5">E-mail</label>
+          <label class="block text-xs font-bold theme-text-muted uppercase tracking-wider mb-1.5">E-mail</label>
           <input type="email" id="auth-email" required placeholder="seu@email.com" 
-            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+            class="w-full border-2 rounded-xl px-4 py-3 text-base focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold theme-text-muted uppercase tracking-wider mb-1.5">Senha</label>
+          <label class="block text-xs font-bold theme-text-muted uppercase tracking-wider mb-1.5">Senha</label>
           <input type="password" id="auth-password" required placeholder="••••••••" 
-            class="w-full border rounded-xl px-4 py-3 text-sm focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+            class="w-full border-2 rounded-xl px-4 py-3 text-base focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
         </div>
 
-        <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/30"></p>
+        <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center bg-rose-500/10 p-3 rounded-lg border border-rose-500/30"></p>
 
-        <button type="submit" id="btn-auth-submit" class="w-full text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg theme-bg-accent transition-all active:scale-[0.98]">
+        <button type="submit" id="btn-auth-submit" class="w-full text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg text-base theme-bg-accent transition-all active:scale-[0.98]">
           <i data-lucide="log-in" class="w-5 h-5"></i>
           <span id="auth-btn-text">Entrar no Aplicativo</span>
         </button>
@@ -179,99 +179,103 @@
   <!-- ================================================================= -->
   <div id="main-app" class="hidden h-screen w-screen flex flex-col overflow-hidden">
 
-    <!-- BANNER PWA DE INSTALAÇÃO NATIVA -->
-    <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-2.5 flex items-center justify-between text-xs font-medium z-30 shadow-lg shrink-0">
-      <div class="flex items-center gap-2">
-        <i data-lucide="download" class="w-4 h-4"></i>
-        <span>Instalar aplicativo nos seus apps!</span>
+    <!-- BANNER PWA DE INSTALAÇÃO -->
+    <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-3 flex items-center justify-between text-sm font-bold z-30 shadow-lg shrink-0">
+      <div class="flex items-center gap-2.5">
+        <i data-lucide="download" class="w-5 h-5"></i>
+        <span>Instalar o App nos seus aplicativos!</span>
       </div>
       <div class="flex items-center gap-2">
-        <button id="btn-install-pwa" class="bg-black/80 text-white px-3 py-1 rounded-lg text-xs font-bold transition-colors">Instalar</button>
-        <button id="btn-dismiss-pwa" class="text-white/80 hover:text-white p-1"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button id="btn-install-pwa" class="bg-black text-white px-3.5 py-1.5 rounded-lg text-xs font-black shadow transition-colors">Instalar</button>
+        <button id="btn-dismiss-pwa" class="text-white/80 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
     </div>
 
     <!-- TOPO & DASHBOARD (FIXO) -->
-    <header class="theme-card border-b shrink-0 z-20 shadow-md">
-      <div class="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between">
-        <button id="btn-open-drawer" class="p-1.5 -ml-1 theme-text-muted hover:text-current rounded-lg active:bg-black/5 transition-colors">
-          <i data-lucide="menu" class="w-6 h-6"></i>
+    <header class="theme-card border-b-2 shrink-0 z-20 shadow-md">
+      <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+        <button id="btn-open-drawer" class="p-2 -ml-2 theme-text-muted hover:text-current rounded-xl active:bg-black/5 transition-colors">
+          <i data-lucide="menu" class="w-7 h-7"></i>
         </button>
 
-        <h1 class="text-base font-bold flex items-center gap-2">
-          <i data-lucide="shopping-cart" class="w-5 h-5 theme-accent"></i>
+        <h1 class="text-lg font-bold flex items-center gap-2">
+          <i data-lucide="shopping-cart" class="w-6 h-6 theme-accent"></i>
           Meu Mercado 2.0
         </h1>
 
-        <div id="sync-indicator" class="flex items-center gap-1.5 text-xs theme-accent font-medium px-2 py-0.5 rounded-full" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
-          <span class="w-2 h-2 rounded-full theme-bg-accent animate-pulse"></span>
-          <span class="text-[10px]" id="user-display-email">Conectado</span>
+        <div id="sync-indicator" class="flex items-center gap-1.5 text-xs theme-accent font-bold px-3 py-1 rounded-full shadow-sm" style="background: var(--brand-bg); border: 1.5px solid var(--brand-border);">
+          <span class="w-2.5 h-2.5 rounded-full theme-bg-accent animate-pulse"></span>
+          <span class="text-xs" id="user-display-email">Conta</span>
         </div>
       </div>
 
-      <div class="border-t py-2 px-4" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-        <div class="max-w-md mx-auto grid grid-cols-2 gap-2.5">
-          <div class="theme-card border rounded-xl p-2 flex flex-col">
-            <span class="text-[9px] font-semibold uppercase tracking-wider theme-text-muted">Total Comprado</span>
-            <span id="display-total" class="text-base font-black">R$ 0,00</span>
+      <div class="border-t-2 py-2.5 px-4" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+        <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
+          <div class="theme-card border-2 rounded-2xl p-3 flex flex-col shadow-sm">
+            <span class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Total Comprado</span>
+            <span id="display-total" class="text-lg font-black mt-0.5">R$ 0,00</span>
           </div>
 
-          <div id="card-saldo" class="theme-card border rounded-xl p-2 flex flex-col transition-colors">
-            <span class="text-[9px] font-semibold uppercase tracking-wider theme-text-muted">Saldo Disponível</span>
-            <span id="display-balance" class="text-base font-black theme-accent">Ilimitado</span>
+          <div id="card-saldo" class="theme-card border-2 rounded-2xl p-3 flex flex-col shadow-sm transition-colors">
+            <span class="text-[10px] font-bold uppercase tracking-wider theme-text-muted">Saldo Disponível</span>
+            <span id="display-balance" class="text-lg font-black theme-accent mt-0.5">Ilimitado</span>
           </div>
         </div>
       </div>
     </header>
 
     <!-- ÁREA PRINCIPAL -->
-    <main class="flex-1 max-w-md mx-auto w-full p-3 flex flex-col gap-3 overflow-hidden">
+    <main class="flex-1 max-w-md mx-auto w-full p-3.5 flex flex-col gap-3.5 overflow-hidden">
       
-      <form id="add-item-form" class="theme-card border rounded-2xl p-3 shadow-md space-y-2 shrink-0">
+      <!-- FORMULÁRIO DE ENTRADA (FIXO) -->
+      <form id="add-item-form" class="theme-card border-2 rounded-2xl p-3.5 shadow-md space-y-2.5 shrink-0">
         <div>
-          <input type="text" id="item-name" placeholder="Nome do item (opcional)" 
-            class="w-full border rounded-xl px-3 py-2 text-xs placeholder-slate-400 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+          <input type="text" id="item-name" placeholder="Adicionar nome do item (opcional)" 
+            class="w-full border-2 rounded-xl px-3.5 py-2.5 text-sm font-medium placeholder-slate-400 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
         </div>
 
-        <div class="grid grid-cols-12 gap-2">
+        <div class="grid grid-cols-12 gap-2.5">
           <div class="col-span-7 relative">
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 theme-text-muted text-xs font-bold">R$</span>
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 theme-text-muted text-sm font-bold">R$</span>
             <input type="number" id="item-price" step="0.01" min="0" placeholder="0,00" required
-              class="w-full border rounded-xl pl-8 pr-2 py-2 text-xs font-bold placeholder-slate-400 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
+              class="w-full border-2 rounded-xl pl-10 pr-3 py-2.5 text-base font-black placeholder-slate-400 focus:outline-none theme-border-accent transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
           </div>
 
-          <div class="col-span-5 flex items-center border rounded-xl px-1" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <button type="button" id="btn-qty-minus" class="p-1.5 theme-text-muted hover:text-current active:scale-90 transition-transform">
-              <i data-lucide="minus" class="w-3.5 h-3.5"></i>
+          <div class="col-span-5 flex items-center border-2 rounded-xl px-1.5" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <button type="button" id="btn-qty-minus" class="p-2 theme-text-muted hover:text-current active:scale-90 transition-transform">
+              <i data-lucide="minus" class="w-4 h-4"></i>
             </button>
             <input type="number" id="item-qty" value="1" min="1" required
-              class="w-full bg-transparent text-center text-xs font-bold focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" style="color: var(--text-main);">
-            <button type="button" id="btn-qty-plus" class="p-1.5 theme-text-muted hover:text-current active:scale-90 transition-transform">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              class="w-full bg-transparent text-center text-base font-black focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" style="color: var(--text-main);">
+            <button type="button" id="btn-qty-plus" class="p-2 theme-text-muted hover:text-current active:scale-90 transition-transform">
+              <i data-lucide="plus" class="w-4 h-4"></i>
             </button>
           </div>
         </div>
 
-        <button type="submit" id="btn-add-item" class="w-full text-white font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-md theme-bg-accent transition-all active:scale-[0.98]">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span class="text-xs">Adicionar à lista</span>
+        <button type="submit" id="btn-add-item" class="w-full text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md text-sm theme-bg-accent transition-all active:scale-[0.98]">
+          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          <span>Adicionar à lista</span>
         </button>
       </form>
 
-      <div class="flex-1 theme-card border rounded-2xl p-3 shadow-md flex flex-col min-h-0 overflow-hidden">
-        <div class="flex items-center justify-between pb-2 border-b shrink-0" style="border-color: var(--bg-card-border);">
-          <div class="flex items-center gap-1.5">
-            <i data-lucide="list-checks" class="w-4 h-4 theme-accent"></i>
-            <h2 class="font-bold text-xs">Carrinho Atual</h2>
+      <!-- CARRINHO ATUAL (COM ROLAGEM) -->
+      <div class="flex-1 theme-card border-2 rounded-2xl p-3.5 shadow-md flex flex-col min-h-0 overflow-hidden">
+        <div class="flex items-center justify-between pb-2.5 border-b-2 shrink-0" style="border-color: var(--bg-card-border);">
+          <div class="flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-5 h-5 theme-accent"></i>
+            <h2 class="font-bold text-sm">Carrinho Atual</h2>
           </div>
-          <span id="items-count-badge" class="text-[10px] theme-text-muted font-semibold px-2 py-0.5 rounded-full border" style="border-color: var(--bg-card-border);">0 itens</span>
+          <span id="items-count-badge" class="text-xs theme-text-muted font-bold px-2.5 py-0.5 rounded-full border-2" style="border-color: var(--bg-card-border);">0 itens</span>
         </div>
 
-        <div id="cart-list" class="flex-1 overflow-y-auto py-2 space-y-2 pr-1"></div>
+        <!-- LISTA ROLÁVEL -->
+        <div id="cart-list" class="flex-1 overflow-y-auto py-2.5 space-y-2.5 pr-1"></div>
 
-        <div class="pt-2 border-t shrink-0" style="border-color: var(--bg-card-border);">
-          <button id="btn-finish-shopping" class="w-full border font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <i data-lucide="check-circle" class="w-4 h-4 theme-accent"></i>
+        <!-- BOTÃO FINALIZAR -->
+        <div class="pt-2.5 border-t-2 shrink-0" style="border-color: var(--bg-card-border);">
+          <button id="btn-finish-shopping" class="w-full border-2 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <i data-lucide="check-circle" class="w-5 h-5 theme-accent"></i>
             Finalizar Compra
           </button>
         </div>
@@ -281,92 +285,92 @@
   </div>
 
   <!-- MENU GAVETA -->
-  <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
+  <div id="drawer-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
   
-  <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] theme-card border-r z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
-    <div class="p-4 border-b flex items-center justify-between" style="border-color: var(--bg-card-border);">
+  <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] theme-card border-r-2 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+    <div class="p-4 border-b-2 flex items-center justify-between" style="border-color: var(--bg-card-border);">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 rounded-xl theme-accent" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
+        <div class="p-2.5 rounded-xl theme-accent" style="background: var(--brand-bg); border: 1.5px solid var(--brand-border);">
           <i data-lucide="wallet" class="w-6 h-6"></i>
         </div>
         <div>
-          <h3 class="font-bold text-sm">Minha Carteira</h3>
-          <p id="drawer-budget-text" class="text-xs theme-text-muted">Teto: Não definido</p>
+          <h3 class="font-bold text-base">Minha Carteira</h3>
+          <p id="drawer-budget-text" class="text-xs font-semibold theme-text-muted">Teto: Não definido</p>
         </div>
       </div>
-      <button id="btn-close-drawer" class="p-1.5 theme-text-muted hover:text-current rounded-lg">
-        <i data-lucide="x" class="w-5 h-5"></i>
+      <button id="btn-close-drawer" class="p-2 theme-text-muted hover:text-current rounded-xl">
+        <i data-lucide="x" class="w-6 h-6"></i>
       </button>
     </div>
 
     <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
       <div>
-        <h4 class="text-xs font-semibold theme-text-muted uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
-        <div class="grid grid-cols-5 gap-1.5">
-          <button onclick="setTheme('light')" class="p-2 rounded-xl border flex flex-col items-center gap-1 hover:border-sky-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <span class="w-4 h-4 rounded-full bg-slate-100 border border-slate-400"></span>
-            <span class="text-[8px] font-bold theme-text-muted">Claro</span>
+        <h4 class="text-xs font-bold theme-text-muted uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
+        <div class="grid grid-cols-5 gap-2">
+          <button onclick="setTheme('light')" class="p-2.5 rounded-xl border-2 flex flex-col items-center gap-1.5 hover:border-sky-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <span class="w-5 h-5 rounded-full bg-slate-100 border border-slate-400"></span>
+            <span class="text-[9px] font-bold theme-text-muted">Claro</span>
           </button>
-          <button onclick="setTheme('emerald')" class="p-2 rounded-xl border flex flex-col items-center gap-1 hover:border-emerald-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <span class="w-4 h-4 rounded-full bg-emerald-500"></span>
-            <span class="text-[8px] font-bold theme-text-muted">Verde</span>
+          <button onclick="setTheme('emerald')" class="p-2.5 rounded-xl border-2 flex flex-col items-center gap-1.5 hover:border-emerald-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <span class="w-5 h-5 rounded-full bg-emerald-500"></span>
+            <span class="text-[9px] font-bold theme-text-muted">Verde</span>
           </button>
-          <button onclick="setTheme('cyberpunk')" class="p-2 rounded-xl border flex flex-col items-center gap-1 hover:border-cyan-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <span class="w-4 h-4 rounded-full bg-cyan-500"></span>
-            <span class="text-[8px] font-bold theme-text-muted">Azul</span>
+          <button onclick="setTheme('cyberpunk')" class="p-2.5 rounded-xl border-2 flex flex-col items-center gap-1.5 hover:border-cyan-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <span class="w-5 h-5 rounded-full bg-cyan-500"></span>
+            <span class="text-[9px] font-bold theme-text-muted">Azul</span>
           </button>
-          <button onclick="setTheme('purple')" class="p-2 rounded-xl border flex flex-col items-center gap-1 hover:border-purple-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <span class="w-4 h-4 rounded-full bg-purple-500"></span>
-            <span class="text-[8px] font-bold theme-text-muted">Roxo</span>
+          <button onclick="setTheme('purple')" class="p-2.5 rounded-xl border-2 flex flex-col items-center gap-1.5 hover:border-purple-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <span class="w-5 h-5 rounded-full bg-purple-500"></span>
+            <span class="text-[9px] font-bold theme-text-muted">Roxo</span>
           </button>
-          <button onclick="setTheme('orange')" class="p-2 rounded-xl border flex flex-col items-center gap-1 hover:border-orange-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-            <span class="w-4 h-4 rounded-full bg-orange-500"></span>
-            <span class="text-[8px] font-bold theme-text-muted">Laranja</span>
+          <button onclick="setTheme('orange')" class="p-2.5 rounded-xl border-2 flex flex-col items-center gap-1.5 hover:border-orange-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <span class="w-5 h-5 rounded-full bg-orange-500"></span>
+            <span class="text-[9px] font-bold theme-text-muted">Laranja</span>
           </button>
         </div>
       </div>
 
       <div>
-        <h4 class="text-xs font-semibold theme-text-muted uppercase tracking-wider mb-3">Configurações</h4>
-        <button id="btn-edit-budget" class="w-full border text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-between transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
-          <span class="flex items-center gap-2">
-            <i data-lucide="edit-3" class="w-4 h-4 theme-accent"></i>
+        <h4 class="text-xs font-bold theme-text-muted uppercase tracking-wider mb-3">Configurações</h4>
+        <button id="btn-edit-budget" class="w-full border-2 text-sm font-bold py-3 px-3.5 rounded-xl flex items-center justify-between transition-colors shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+          <span class="flex items-center gap-2.5">
+            <i data-lucide="edit-3" class="w-5 h-5 theme-accent"></i>
             Definir Limite do Mercado
           </span>
-          <i data-lucide="chevron-right" class="w-4 h-4 theme-text-muted"></i>
+          <i data-lucide="chevron-right" class="w-5 h-5 theme-text-muted"></i>
         </button>
       </div>
 
       <div class="flex-1">
         <div class="flex items-center justify-between mb-3">
-          <h4 class="text-xs font-semibold theme-text-muted uppercase tracking-wider">Histórico de Compras</h4>
-          <span id="history-count" class="text-[10px] theme-card border theme-text-muted px-2 py-0.5 rounded-full font-bold" style="border-color: var(--bg-card-border);">0</span>
+          <h4 class="text-xs font-bold theme-text-muted uppercase tracking-wider">Histórico de Compras</h4>
+          <span id="history-count" class="text-xs theme-card border-2 theme-text-muted px-2.5 py-0.5 rounded-full font-bold" style="border-color: var(--bg-card-border);">0</span>
         </div>
-        <div id="history-list" class="space-y-2"></div>
+        <div id="history-list" class="space-y-2.5"></div>
       </div>
     </div>
 
-    <div class="p-4 border-t flex items-center justify-between" style="border-color: var(--bg-card-border);">
-      <span class="text-[10px] theme-text-muted">Meu Mercado 2.0</span>
-      <button id="btn-logout" class="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1">
-        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sair da Conta
+    <div class="p-4 border-t-2 flex items-center justify-between" style="border-color: var(--bg-card-border);">
+      <span class="text-xs font-semibold theme-text-muted">Meu Mercado 2.0</span>
+      <button id="btn-logout" class="text-xs text-rose-500 hover:text-rose-600 font-bold flex items-center gap-1.5">
+        <i data-lucide="log-out" class="w-4 h-4"></i> Sair da Conta
       </button>
     </div>
   </aside>
 
   <!-- MODAL -->
-  <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="theme-card border w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
-      <div class="w-12 h-12 rounded-full flex items-center justify-center theme-accent mx-auto" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
-        <i data-lucide="archive" class="w-6 h-6"></i>
+  <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center theme-accent mx-auto shadow-md" style="background: var(--brand-bg); border: 2px solid var(--brand-border);">
+        <i data-lucide="archive" class="w-7 h-7"></i>
       </div>
       <div>
         <h3 class="text-lg font-bold">Excluir da tela principal?</h3>
-        <p class="theme-text-muted text-xs mt-1">A lista atual será limpa, mas o total ficará mantido no seu Histórico.</p>
+        <p class="theme-text-muted text-xs font-medium mt-1">A lista atual será limpa, mas o total ficará guardado com sucesso no seu Histórico.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2">
-        <button id="btn-cancel-finish" class="border text-xs font-bold py-2.5 rounded-xl transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">Cancelar</button>
-        <button id="btn-confirm-finish" class="theme-bg-accent text-white text-xs font-bold py-2.5 rounded-xl shadow-lg transition-colors">Sim, Arquivar</button>
+        <button id="btn-cancel-finish" class="border-2 text-xs font-bold py-3 rounded-xl transition-colors shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">Cancelar</button>
+        <button id="btn-confirm-finish" class="theme-bg-accent text-white text-xs font-bold py-3 rounded-xl shadow-lg transition-colors">Sim, Arquivar</button>
       </div>
     </div>
   </div>
@@ -404,7 +408,7 @@
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
-    // CONFIGURAÇÃO PWA CORRIGIDA PARA GAVETA DE APLICATIVOS
+    // CONFIGURAÇÃO PWA NATIVA
     function setupPWA() {
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
         <rect width="512" height="512" rx="128" fill="#0284c7"/>
@@ -478,16 +482,16 @@
 
     tabLogin.addEventListener('click', () => {
       authMode = 'login';
-      tabLogin.className = "py-2.5 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
-      tabRegister.className = "py-2.5 text-xs font-bold rounded-lg transition-colors theme-text-muted hover:text-current";
+      tabLogin.className = "py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent";
+      tabRegister.className = "py-3 text-sm font-bold rounded-lg transition-colors theme-text-muted hover:text-current";
       document.getElementById('auth-btn-text').innerText = "Entrar no Aplicativo";
       document.getElementById('auth-subtitle').innerText = "Entre com sua conta para sincronizar";
     });
 
     tabRegister.addEventListener('click', () => {
       authMode = 'register';
-      tabRegister.className = "py-2.5 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
-      tabLogin.className = "py-2.5 text-xs font-bold rounded-lg transition-colors theme-text-muted hover:text-current";
+      tabRegister.className = "py-3 text-sm font-bold rounded-lg transition-colors text-white theme-bg-accent";
+      tabLogin.className = "py-3 text-sm font-bold rounded-lg transition-colors theme-text-muted hover:text-current";
       document.getElementById('auth-btn-text').innerText = "Criar Nova Conta";
       document.getElementById('auth-subtitle').innerText = "Cadastre um e-mail para usar com a família";
     });
@@ -586,10 +590,10 @@
 
       if (saldo === null) {
         balanceEl.innerText = "Ilimitado";
-        balanceEl.className = "text-base font-black theme-text-muted";
+        balanceEl.className = "text-lg font-black theme-text-muted mt-0.5";
       } else {
         balanceEl.innerText = formatCurrency(saldo);
-        balanceEl.className = saldo < 0 ? "text-base font-black text-rose-500" : "text-base font-black theme-accent";
+        balanceEl.className = saldo < 0 ? "text-lg font-black text-rose-500 mt-0.5" : "text-lg font-black theme-accent mt-0.5";
       }
 
       document.getElementById('drawer-budget-text').innerText = appState.budget !== null ? `Teto: ${formatCurrency(appState.budget)}` : 'Teto: Não definido';
@@ -598,19 +602,19 @@
       document.getElementById('items-count-badge').innerText = `${appState.items.length} ${appState.items.length === 1 ? 'item' : 'itens'}`;
 
       if (appState.items.length === 0) {
-        cartList.innerHTML = `<div class="flex flex-col items-center justify-center text-center py-6 theme-text-muted"><p class="text-xs">Sua lista está vazia.</p></div>`;
+        cartList.innerHTML = `<div class="flex flex-col items-center justify-center text-center py-8 theme-text-muted"><p class="text-sm font-medium">Sua lista está vazia.</p></div>`;
       } else {
         cartList.innerHTML = appState.items.slice().reverse().map((item, reverseIndex) => {
           const originalIndex = appState.items.length - 1 - reverseIndex;
           return `
-            <div class="border rounded-xl p-2.5 flex items-center justify-between gap-3 shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+            <div class="border-2 rounded-xl p-3 flex items-center justify-between gap-3 shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
               <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold truncate">${item.name || 'Item sem nome'}</p>
-                <p class="text-[10px] theme-text-muted mt-0.5"><span class="theme-accent font-bold">${formatCurrency(item.price)}</span> x ${item.qty} un</p>
+                <p class="text-sm font-bold truncate">${item.name || 'Item sem nome'}</p>
+                <p class="text-xs theme-text-muted mt-0.5 font-semibold"><span class="theme-accent font-black">${formatCurrency(item.price)}</span> x ${item.qty} un</p>
               </div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-black">${formatCurrency(item.price * item.qty)}</span>
-                <button onclick="removeItem(${originalIndex})" class="theme-text-muted hover:text-rose-500 p-1.5 rounded-lg active:bg-black/5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+              <div class="flex items-center gap-2.5">
+                <span class="text-sm font-black">${formatCurrency(item.price * item.qty)}</span>
+                <button onclick="removeItem(${originalIndex})" class="theme-text-muted hover:text-rose-500 p-2 rounded-xl active:bg-black/5"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
               </div>
             </div>
           `;
@@ -624,12 +628,12 @@
         historyList.innerHTML = `<p class="text-xs theme-text-muted italic py-2">Nenhuma compra arquivada.</p>`;
       } else {
         historyList.innerHTML = appState.history.slice().reverse().map((h) => `
-          <div class="border rounded-xl p-2.5 flex items-center justify-between" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
+          <div class="border-2 rounded-xl p-3 flex items-center justify-between shadow-sm" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
             <div>
-              <p class="text-xs font-semibold">${h.date}</p>
-              <p class="text-[10px] theme-text-muted">${h.itemCount} ${h.itemCount === 1 ? 'item' : 'itens'}</p>
+              <p class="text-xs font-bold">${h.date}</p>
+              <p class="text-[10px] theme-text-muted font-semibold">${h.itemCount} ${h.itemCount === 1 ? 'item' : 'itens'}</p>
             </div>
-            <span class="text-xs font-bold theme-accent">${formatCurrency(h.total)}</span>
+            <span class="text-xs font-black theme-accent">${formatCurrency(h.total)}</span>
           </div>
         `).join('');
       }
@@ -726,7 +730,6 @@
       document.getElementById('confirm-finish-modal').classList.add('hidden');
     });
 
-    // Iniciar PWA
     setupPWA();
   </script>
 </body>
