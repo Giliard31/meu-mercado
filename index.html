@@ -44,7 +44,6 @@
   <link rel="manifest" id="manifest-placeholder">
 
   <style>
-    /* Definições de Variáveis de Temas */
     :root[data-theme="emerald"] {
       --brand-main: #10b981;
       --brand-hover: #059669;
@@ -89,21 +88,15 @@
       background: #334155;
       border-radius: 4px;
     }
-    .theme-accent {
-      color: var(--brand-main);
-    }
-    .theme-bg-accent {
-      background-color: var(--brand-main);
-    }
-    .theme-border-accent {
-      border-color: var(--brand-main);
-    }
+    .theme-accent { color: var(--brand-main); }
+    .theme-bg-accent { background-color: var(--brand-main); }
+    .theme-border-accent { border-color: var(--brand-main); }
   </style>
 </head>
 <body data-theme="emerald" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-hidden">
 
   <!-- ================================================================= -->
-  <!-- TELA DE AUTENTICAÇÃO (LOGIN / CADASTRO)                           -->
+  <!-- TELA DE AUTENTICAÇÃO OBRIGATÓRIA (TELA INICIAL)                   -->
   <!-- ================================================================= -->
   <div id="auth-screen" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
@@ -113,13 +106,13 @@
           <i data-lucide="shopping-bag" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-bold text-slate-100">Meu Mercado 2.0</h2>
-        <p class="text-slate-400 text-sm mt-1" id="auth-subtitle">Entre para sincronizar com sua família</p>
+        <p class="text-slate-400 text-sm mt-1" id="auth-subtitle">Entre com sua conta para sincronizar</p>
       </div>
 
-      <!-- Abas Login vs Cadastro -->
+      <!-- Abas: Entrar x Cadastrar -->
       <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl mb-5 border border-slate-800">
-        <button id="tab-login" class="py-2 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
-        <button id="tab-register" class="py-2 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white">Cadastrar</button>
+        <button id="tab-login" type="button" class="py-2.5 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent">Entrar</button>
+        <button id="tab-register" type="button" class="py-2.5 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white">Criar Conta</button>
       </div>
 
       <form id="auth-form" class="space-y-4">
@@ -135,247 +128,210 @@
             class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none theme-border-accent transition-colors">
         </div>
 
-        <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center"></p>
+        <p id="auth-error" class="text-xs text-rose-500 hidden font-medium text-center bg-rose-950/40 p-2.5 rounded-lg border border-rose-800/40"></p>
 
         <button type="submit" id="btn-auth-submit" class="w-full text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg theme-bg-accent transition-all active:scale-[0.98]">
           <i data-lucide="log-in" class="w-5 h-5"></i>
-          <span id="auth-btn-text">Entrar no App</span>
+          <span id="auth-btn-text">Entrar no Aplicativo</span>
         </button>
       </form>
     </div>
   </div>
 
   <!-- ================================================================= -->
-  <!-- MODAL DE ORÇAMENTO INICIAL                                         -->
+  <!-- APLICAÇÃO PRINCIPAL (SÓ EXIBIDA APÓS O LOGIN)                      -->
   <!-- ================================================================= -->
-  <div id="welcome-modal" class="fixed inset-0 z-40 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
-      
-      <div class="flex flex-col items-center text-center mb-6">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center theme-accent mb-3 shadow-lg" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
-          <i data-lucide="wallet" class="w-8 h-8"></i>
+  <div id="main-app" class="hidden min-h-screen flex flex-col">
+
+    <!-- BANNER DE INSTALAÇÃO PWA -->
+    <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-2.5 flex items-center justify-between text-xs sm:text-sm font-medium z-30 shadow-md">
+      <div class="flex items-center gap-2">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>Instale o App na tela inicial!</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-install-pwa" class="bg-slate-950 theme-accent px-3 py-1 rounded-lg text-xs font-bold transition-colors">
+          Instalar
+        </button>
+        <button id="btn-dismiss-pwa" class="text-white/70 hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- TOPO FIXO -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-20 shadow-lg">
+      <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+        
+        <button id="btn-open-drawer" class="p-2 -ml-2 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition-colors">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+
+        <h1 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+          <i data-lucide="shopping-cart" class="w-5 h-5 theme-accent"></i>
+          Meu Mercado 2.0
+        </h1>
+
+        <div id="sync-indicator" class="flex items-center gap-1.5 text-xs theme-accent font-medium px-2.5 py-1 rounded-full" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
+          <span class="w-2 h-2 rounded-full theme-bg-accent animate-pulse"></span>
+          <span class="text-[11px]" id="user-display-email">Conectado</span>
         </div>
-        <h2 class="text-2xl font-bold text-slate-100">Definir Orçamento</h2>
-        <p class="text-slate-400 text-sm mt-1">Quanto você pretende gastar hoje?</p>
       </div>
 
-      <div class="space-y-4">
+      <!-- DASHBOARD DE TOTAL E SALDO -->
+      <div class="bg-slate-950/80 backdrop-blur border-t border-slate-800/60 py-3 px-4">
+        <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
+          
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Total Comprado</span>
+            <span id="display-total" class="text-xl font-black text-slate-100 mt-0.5">R$ 0,00</span>
+          </div>
+
+          <div id="card-saldo" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col transition-colors">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Saldo Disponível</span>
+            <span id="display-balance" class="text-xl font-black theme-accent mt-0.5">Ilimitado</span>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- MENU GAVETA LATERAL -->
+    <div id="drawer-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
+    
+    <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] bg-slate-900 border-r border-slate-800 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+      
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 rounded-xl theme-accent" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
+            <i data-lucide="wallet" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-100 text-sm">Minha Carteira</h3>
+            <p id="drawer-budget-text" class="text-xs text-slate-400">Teto: Não definido</p>
+          </div>
+        </div>
+        <button id="btn-close-drawer" class="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
+        
+        <!-- OPÇÕES DE TEMAS (TROCA DE CORES) -->
         <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Valor Disponível (R$)</label>
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
-            <input type="number" id="initial-budget-input" step="0.01" placeholder="Ex: 200,00" 
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl py-3.5 pl-12 pr-4 theme-accent text-xl font-bold focus:outline-none transition-colors">
+          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
+          <div class="grid grid-cols-4 gap-2">
+            <button onclick="setTheme('emerald')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-emerald-500 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-emerald-500"></span>
+              <span class="text-[9px] font-bold text-slate-400">Verde</span>
+            </button>
+            <button onclick="setTheme('cyberpunk')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-cyan-500 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-cyan-500"></span>
+              <span class="text-[9px] font-bold text-slate-400">Azul</span>
+            </button>
+            <button onclick="setTheme('purple')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-purple-500 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-purple-500"></span>
+              <span class="text-[9px] font-bold text-slate-400">Roxo</span>
+            </button>
+            <button onclick="setTheme('orange')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-orange-500 transition-colors">
+              <span class="w-5 h-5 rounded-full bg-orange-500"></span>
+              <span class="text-[9px] font-bold text-slate-400">Laranja</span>
+            </button>
           </div>
         </div>
 
-        <button id="btn-start-shopping" class="w-full text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg theme-bg-accent transition-all active:scale-[0.98]">
-          <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-          Começar as compras
-        </button>
-
-        <button id="btn-skip-budget" class="w-full text-slate-500 hover:text-slate-400 text-sm font-medium py-2 text-center transition-colors">
-          Não quero definir valor, ok?
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================================================================= -->
-  <!-- BANNER DE INSTALAÇÃO PWA                                         -->
-  <!-- ================================================================= -->
-  <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-2.5 flex items-center justify-between text-xs sm:text-sm font-medium z-30 shadow-md">
-    <div class="flex items-center gap-2">
-      <i data-lucide="download" class="w-4 h-4"></i>
-      <span>Instale o App na tela inicial!</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <button id="btn-install-pwa" class="bg-slate-950 theme-accent px-3 py-1 rounded-lg text-xs font-bold transition-colors">
-        Instalar
-      </button>
-      <button id="btn-dismiss-pwa" class="text-white/70 hover:text-white p-1">
-        <i data-lucide="x" class="w-4 h-4"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- ================================================================= -->
-  <!-- TOPO FIXO                                                        -->
-  <!-- ================================================================= -->
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-20 shadow-lg">
-    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-      
-      <button id="btn-open-drawer" class="p-2 -ml-2 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition-colors">
-        <i data-lucide="menu" class="w-6 h-6"></i>
-      </button>
-
-      <h1 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-        <i data-lucide="shopping-cart" class="w-5 h-5 theme-accent"></i>
-        Meu Mercado 2.0
-      </h1>
-
-      <div id="sync-indicator" class="flex items-center gap-1.5 text-xs theme-accent font-medium px-2.5 py-1 rounded-full" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
-        <span class="w-2 h-2 rounded-full theme-bg-accent animate-pulse"></span>
-        <span class="text-[11px]" id="user-display-email">Conectado</span>
-      </div>
-    </div>
-
-    <!-- Painel Fixo de Valores -->
-    <div class="bg-slate-950/80 backdrop-blur border-t border-slate-800/60 py-3 px-4">
-      <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
-        
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Total Comprado</span>
-          <span id="display-total" class="text-xl font-black text-slate-100 mt-0.5">R$ 0,00</span>
-        </div>
-
-        <div id="card-saldo" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col transition-colors">
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Saldo Disponível</span>
-          <span id="display-balance" class="text-xl font-black theme-accent mt-0.5">Ilimitado</span>
-        </div>
-
-      </div>
-    </div>
-  </header>
-
-  <!-- ================================================================= -->
-  <!-- MENU GAVETA LATERAL (DRAWER)                                     -->
-  <!-- ================================================================= -->
-  <div id="drawer-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
-  
-  <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] bg-slate-900 border-r border-slate-800 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
-    
-    <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="p-2.5 rounded-xl theme-accent" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
-          <i data-lucide="wallet" class="w-6 h-6"></i>
-        </div>
+        <!-- DEFINIR SALDO -->
         <div>
-          <h3 class="font-bold text-slate-100 text-sm">Minha Carteira</h3>
-          <p id="drawer-budget-text" class="text-xs text-slate-400">Teto: Não definido</p>
+          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Configurações</h4>
+          <button id="btn-edit-budget" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-between border border-slate-700 transition-colors">
+            <span class="flex items-center gap-2">
+              <i data-lucide="edit-3" class="w-4 h-4 theme-accent"></i>
+              Definir Limite do Mercado
+            </span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+          </button>
         </div>
-      </div>
-      <button id="btn-close-drawer" class="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-    </div>
 
-    <div class="flex-1 overflow-y-auto p-4 space-y-6">
+        <!-- HISTÓRICO -->
+        <div class="flex-1">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Histórico de Compras</h4>
+            <span id="history-count" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold">0</span>
+          </div>
+          <div id="history-list" class="space-y-2"></div>
+        </div>
+
+      </div>
+
+      <!-- BOTÃO DE LOGOUT (SAIR) -->
+      <div class="p-4 border-t border-slate-800 flex items-center justify-between">
+        <span class="text-[10px] text-slate-500">Meu Mercado 2.0</span>
+        <button id="btn-logout" class="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sair da Conta
+        </button>
+      </div>
+    </aside>
+
+    <!-- CORPO PRINCIPAL DO APP -->
+    <main class="flex-1 max-w-md mx-auto w-full p-4 flex flex-col gap-4 overflow-y-auto">
       
-      <!-- Seletor de Temas (Troca de Cores) -->
-      <div>
-        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
-        <div class="grid grid-cols-4 gap-2">
-          <button onclick="setTheme('emerald')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-emerald-500 transition-colors">
-            <span class="w-5 h-5 rounded-full bg-emerald-500"></span>
-            <span class="text-[9px] font-bold text-slate-400">Verde</span>
-          </button>
-          <button onclick="setTheme('cyberpunk')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-cyan-500 transition-colors">
-            <span class="w-5 h-5 rounded-full bg-cyan-500"></span>
-            <span class="text-[9px] font-bold text-slate-400">Azul</span>
-          </button>
-          <button onclick="setTheme('purple')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-purple-500 transition-colors">
-            <span class="w-5 h-5 rounded-full bg-purple-500"></span>
-            <span class="text-[9px] font-bold text-slate-400">Roxo</span>
-          </button>
-          <button onclick="setTheme('orange')" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col items-center gap-1 hover:border-orange-500 transition-colors">
-            <span class="w-5 h-5 rounded-full bg-orange-500"></span>
-            <span class="text-[9px] font-bold text-slate-400">Laranja</span>
-          </button>
+      <!-- FORMULÁRIO DE ITENS -->
+      <form id="add-item-form" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
+        <div>
+          <input type="text" id="item-name" placeholder="Adicionar o nome do item (opcional)" 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none theme-border-accent transition-colors">
         </div>
-      </div>
 
-      <!-- Alterar Orçamento -->
-      <div>
-        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Configurações</h4>
-        <button id="btn-edit-budget" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-between border border-slate-700 transition-colors">
-          <span class="flex items-center gap-2">
-            <i data-lucide="edit-3" class="w-4 h-4 theme-accent"></i>
-            Redefinir Limite de Gastos
-          </span>
-          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+        <div class="grid grid-cols-12 gap-2">
+          <div class="col-span-7 relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-bold">R$</span>
+            <input type="number" id="item-price" step="0.01" min="0" placeholder="0,00" required
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-100 font-bold placeholder-slate-600 focus:outline-none theme-border-accent transition-colors">
+          </div>
+
+          <div class="col-span-5 flex items-center bg-slate-950 border border-slate-800 rounded-xl px-1">
+            <button type="button" id="btn-qty-minus" class="p-2 text-slate-400 hover:text-white active:scale-90 transition-transform">
+              <i data-lucide="minus" class="w-4 h-4"></i>
+            </button>
+            <input type="number" id="item-qty" value="1" min="1" required
+              class="w-full bg-transparent text-center text-sm font-bold text-slate-100 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+            <button type="button" id="btn-qty-plus" class="p-2 text-slate-400 hover:text-white active:scale-90 transition-transform">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-add-item" class="w-full text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md theme-bg-accent transition-all active:scale-[0.98]">
+          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          <span>Adicionar à lista</span>
         </button>
-      </div>
+      </form>
 
-      <!-- Histórico -->
-      <div>
-        <div class="flex items-center justify-between mb-3">
-          <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Histórico de Compras</h4>
-          <span id="history-count" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-bold">0</span>
-        </div>
-        
-        <div id="history-list" class="space-y-2"></div>
-      </div>
-
-    </div>
-
-    <!-- Rodapé com Logout -->
-    <div class="p-4 border-t border-slate-800 flex items-center justify-between">
-      <span class="text-[10px] text-slate-500">Meu Mercado 2.0</span>
-      <button id="btn-logout" class="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1">
-        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sair
-      </button>
-    </div>
-  </aside>
-
-  <!-- ================================================================= -->
-  <!-- CORPO DA PÁGINA                                                   -->
-  <!-- ================================================================= -->
-  <main class="flex-1 max-w-md mx-auto w-full p-4 flex flex-col gap-4 overflow-y-auto">
-    
-    <form id="add-item-form" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
-      <div>
-        <input type="text" id="item-name" placeholder="Adicionar o nome do item (opcional)" 
-          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none theme-border-accent transition-colors">
-      </div>
-
-      <div class="grid grid-cols-12 gap-2">
-        <div class="col-span-7 relative">
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-bold">R$</span>
-          <input type="number" id="item-price" step="0.01" min="0" placeholder="0,00" required
-            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-100 font-bold placeholder-slate-600 focus:outline-none theme-border-accent transition-colors">
+      <!-- LISTA DO CARRINHO -->
+      <div class="flex-1 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md overflow-hidden">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-4 h-4 theme-accent"></i>
+            <h2 class="font-bold text-slate-200 text-sm">Carrinho Atual</h2>
+          </div>
+          <span id="items-count-badge" class="text-xs bg-slate-800 text-slate-300 font-semibold px-2 py-0.5 rounded-full">0 itens</span>
         </div>
 
-        <div class="col-span-5 flex items-center bg-slate-950 border border-slate-800 rounded-xl px-1">
-          <button type="button" id="btn-qty-minus" class="p-2 text-slate-400 hover:text-white active:scale-90 transition-transform">
-            <i data-lucide="minus" class="w-4 h-4"></i>
-          </button>
-          <input type="number" id="item-qty" value="1" min="1" required
-            class="w-full bg-transparent text-center text-sm font-bold text-slate-100 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-          <button type="button" id="btn-qty-plus" class="p-2 text-slate-400 hover:text-white active:scale-90 transition-transform">
-            <i data-lucide="plus" class="w-4 h-4"></i>
+        <div id="cart-list" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
+
+        <div class="pt-3 border-t border-slate-800">
+          <button id="btn-finish-shopping" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition-colors">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            Finalizar Compra
           </button>
         </div>
       </div>
 
-      <button type="submit" id="btn-add-item" class="w-full text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md theme-bg-accent transition-all active:scale-[0.98]">
-        <i data-lucide="plus-circle" class="w-5 h-5"></i>
-        <span>Adicionar à lista</span>
-      </button>
-    </form>
+    </main>
+  </div>
 
-    <div class="flex-1 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md overflow-hidden">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-        <div class="flex items-center gap-2">
-          <i data-lucide="list-checks" class="w-4 h-4 theme-accent"></i>
-          <h2 class="font-bold text-slate-200 text-sm">Carrinho Atual</h2>
-        </div>
-        <span id="items-count-badge" class="text-xs bg-slate-800 text-slate-300 font-semibold px-2 py-0.5 rounded-full">0 itens</span>
-      </div>
-
-      <div id="cart-list" class="flex-1 overflow-y-auto py-3 space-y-2.5"></div>
-
-      <div class="pt-3 border-t border-slate-800">
-        <button id="btn-finish-shopping" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition-colors">
-          <i data-lucide="check-circle" class="w-5 h-5"></i>
-          Finalizar Compra
-        </button>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- MODAL ALERTA -->
+  <!-- MODAL DE ALERTA DE SALDO ACABANDO -->
   <div id="alert-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-rose-500/40 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       <div class="w-14 h-14 bg-rose-500/20 border border-rose-500/40 rounded-full flex items-center justify-center text-rose-400 mx-auto">
@@ -383,7 +339,7 @@
       </div>
       <div>
         <h3 class="text-xl font-bold text-slate-100">Atenção!</h3>
-        <p class="text-rose-400 font-semibold text-sm mt-1">Seu saldo está acabando!</p>
+        <p class="text-rose-400 font-semibold text-sm mt-1">O seu saldo está acabando!</p>
         <p id="alert-modal-text" class="text-slate-400 text-xs mt-2">Restam menos de R$ 10,00 no seu limite.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2">
@@ -393,15 +349,15 @@
     </div>
   </div>
 
-  <!-- MODAL FINALIZAR -->
+  <!-- MODAL DE CONFIRMAÇÃO DE ARQUIVAMENTO -->
   <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       <div class="w-12 h-12 rounded-full flex items-center justify-center theme-accent mx-auto" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
         <i data-lucide="archive" class="w-6 h-6"></i>
       </div>
       <div>
-        <h3 class="text-lg font-bold text-slate-100">Finalizar e Arquivar?</h3>
-        <p class="text-slate-400 text-xs mt-1">A lista principal será limpa e salva no seu Histórico.</p>
+        <h3 class="text-lg font-bold text-slate-100">Excluir da tela principal?</h3>
+        <p class="text-slate-400 text-xs mt-1">A lista atual será limpa, mas o total ficará mantido no seu Histórico.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2">
         <button id="btn-cancel-finish" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold py-2.5 rounded-xl border border-slate-700 transition-colors">Cancelar</button>
@@ -410,10 +366,11 @@
     </div>
   </div>
 
-  <!-- SCRIPTS -->
+  <!-- SCRIPTS E LÓGICA COMPLETA -->
   <script>
     lucide.createIcons();
 
+    // CREDENCIAIS FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyDAiW612rePMhsup_R30pM9py2VZsghP2Y",
       authDomain: "meu-mercado-555b8.firebaseapp.com",
@@ -438,38 +395,38 @@
       history: []
     };
 
-    // TROCA DE TEMA (LAYOUT/CORES)
+    // TROCA DE TEMAS
     function setTheme(themeName) {
       document.documentElement.setAttribute('data-theme', themeName);
       localStorage.setItem('selected_theme', themeName);
     }
-    const savedTheme = localStorage.getItem('selected_theme') || 'emerald';
-    setTheme(savedTheme);
+    setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
-    // GERENCIAMENTO DE AUTENTICAÇÃO
+    // MUDANÇA ENTRE ENTRAR E CADASTRAR
     let authMode = 'login';
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
 
     tabLogin.addEventListener('click', () => {
       authMode = 'login';
-      tabLogin.className = "py-2 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
-      tabRegister.className = "py-2 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white";
-      document.getElementById('auth-btn-text').innerText = "Entrar no App";
-      document.getElementById('auth-subtitle').innerText = "Entre para sincronizar com sua família";
+      tabLogin.className = "py-2.5 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
+      tabRegister.className = "py-2.5 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white";
+      document.getElementById('auth-btn-text').innerText = "Entrar no Aplicativo";
+      document.getElementById('auth-subtitle').innerText = "Entre com sua conta para sincronizar";
     });
 
     tabRegister.addEventListener('click', () => {
       authMode = 'register';
-      tabRegister.className = "py-2 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
-      tabLogin.className = "py-2 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white";
-      document.getElementById('auth-btn-text').innerText = "Criar Minha Conta";
-      document.getElementById('auth-subtitle').innerText = "Crie uma conta para usar em vários celulares";
+      tabRegister.className = "py-2.5 text-xs font-bold rounded-lg transition-colors text-white theme-bg-accent";
+      tabLogin.className = "py-2.5 text-xs font-bold rounded-lg transition-colors text-slate-400 hover:text-white";
+      document.getElementById('auth-btn-text').innerText = "Criar Nova Conta";
+      document.getElementById('auth-subtitle').innerText = "Cadastre um e-mail para usar com a família";
     });
 
+    // SUBMETER LOGIN OU CADASTRO
     document.getElementById('auth-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('auth-email').value;
+      const email = document.getElementById('auth-email').value.trim();
       const password = document.getElementById('auth-password').value;
       const errEl = document.getElementById('auth-error');
       errEl.classList.add('hidden');
@@ -481,27 +438,37 @@
           await auth.createUserWithEmailAndPassword(email, password);
         }
       } catch (err) {
-        errEl.innerText = err.message;
+        let msg = "Erro ao conectar. Verifique os dados.";
+        if (err.code === 'auth/user-not-found') msg = "Usuário não encontrado. Crie uma conta.";
+        if (err.code === 'auth/wrong-password') msg = "Senha incorreta.";
+        if (err.code === 'auth/email-already-in-use') msg = "E-mail já cadastrado. Faça login.";
+        if (err.code === 'auth/weak-password') msg = "A senha deve ter pelo menos 6 caracteres.";
+        errEl.innerText = msg;
         errEl.classList.remove('hidden');
       }
     });
 
+    // LOGOUT
     document.getElementById('btn-logout').addEventListener('click', () => {
       auth.signOut();
     });
 
+    // MONITORAMENTO DE AUTENTICAÇÃO OBRIGATÓRIA
     auth.onAuthStateChanged((user) => {
       currentUser = user;
       if (user) {
         document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
         document.getElementById('user-display-email').innerText = user.email.split('@')[0];
         initFirebaseSync(user.uid);
       } else {
         document.getElementById('auth-screen').classList.remove('hidden');
+        document.getElementById('main-app').classList.add('hidden');
         if (unsubscribeSync) unsubscribeSync();
       }
     });
 
+    // SINCRONIZAÇÃO EM TEMPO REAL COM FIREBASE
     function initFirebaseSync(uid) {
       const docRef = db.collection("usuarios").doc(uid);
       
@@ -541,12 +508,6 @@
 
     function renderUI() {
       const { totalGasto, saldo } = calculateTotals();
-
-      if (appState.budget === null && appState.items.length === 0 && !localStorage.getItem('welcome_seen')) {
-        document.getElementById('welcome-modal').classList.remove('hidden');
-      } else {
-        document.getElementById('welcome-modal').classList.add('hidden');
-      }
 
       document.getElementById('display-total').innerText = formatCurrency(totalGasto);
       const balanceEl = document.getElementById('display-balance');
@@ -601,22 +562,7 @@
       lucide.createIcons();
     }
 
-    // Ações de Eventos
-    document.getElementById('btn-start-shopping').addEventListener('click', () => {
-      const val = parseFloat(document.getElementById('initial-budget-input').value);
-      if (!isNaN(val) && val > 0) appState.budget = val;
-      localStorage.setItem('welcome_seen', 'true');
-      saveToFirestore();
-      document.getElementById('welcome-modal').classList.add('hidden');
-    });
-
-    document.getElementById('btn-skip-budget').addEventListener('click', () => {
-      appState.budget = null;
-      localStorage.setItem('welcome_seen', 'true');
-      saveToFirestore();
-      document.getElementById('welcome-modal').classList.add('hidden');
-    });
-
+    // ADICIONAR ITEM
     document.getElementById('add-item-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const nameInput = document.getElementById('item-name');
@@ -653,7 +599,7 @@
       saveToFirestore();
     };
 
-    // Gaveta
+    // CONTROLE DA GAVETA
     const drawer = document.getElementById('drawer');
     const backdrop = document.getElementById('drawer-backdrop');
 
@@ -674,7 +620,7 @@
     document.getElementById('btn-edit-budget').addEventListener('click', () => {
       closeDrawer();
       const current = appState.budget !== null ? appState.budget : '';
-      const newVal = prompt("Digite o novo limite (R$):", current);
+      const newVal = prompt("Digite o limite total de compras (R$):", current);
       if (newVal !== null) {
         const parsed = parseFloat(newVal.replace(',', '.'));
         appState.budget = !isNaN(parsed) && parsed > 0 ? parsed : null;
@@ -682,6 +628,7 @@
       }
     });
 
+    // FINALIZAR E ARQUIVAR COMPRA
     document.getElementById('btn-finish-shopping').addEventListener('click', () => {
       if (appState.items.length === 0) return;
       document.getElementById('confirm-finish-modal').classList.remove('hidden');
