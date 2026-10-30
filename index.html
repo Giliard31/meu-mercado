@@ -226,10 +226,10 @@
             </div>
           </div>
 
-          <!-- BOTÃO DE INSTALAÇÃO NATIVA (FORÇADO A APARECER) -->
-          <button id="btn-install-app" class="w-full theme-bg-accent text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-xs shadow-lg transition-all active:scale-[0.98] animate-pulse">
+          <!-- BOTÃO DE INSTALAÇÃO NATIVA (SÓ APARECE SE NÃO ESTIVER INSTALADO) -->
+          <button id="btn-install-app" class="hidden w-full theme-bg-accent text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-xs shadow-lg transition-all active:scale-[0.98]">
             <i data-lucide="download-cloud" class="w-5 h-5"></i>
-            <span>Instalar Aplicativo Oficial no Celular</span>
+            <span>Instalar Aplicativo no Celular</span>
           </button>
         </div>
       </div>
@@ -417,6 +417,23 @@
     </div>
   </aside>
 
+  <!-- MODAL DE INSTRUÇÃO DE INSTALAÇÃO (CASO O NAVEGADOR BLOQUEIE O DISPARO DIRETO) -->
+  <div id="install-guide-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto shadow-md theme-accent bg-emerald-500/20 border-2 border-emerald-500/40">
+        <i data-lucide="smartphone" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold">Instalar Aplicativo</h3>
+        <p class="theme-text-muted text-xs font-medium mt-1.5">Para instalar o app na sua gaveta de aplicativos com o ícone oficial, toque nos **3 pontinhos** no canto superior direito do navegador e selecione:</p>
+        <div class="mt-3 p-3 rounded-xl bg-black/25 border border-emerald-500/30 text-emerald-400 font-bold text-xs">
+          "Instalar aplicativo" ou "Adicionar à tela inicial"
+        </div>
+      </div>
+      <button id="btn-close-install-guide" class="w-full theme-bg-accent text-white text-xs font-bold py-3 rounded-xl shadow-lg transition-colors">Entendi</button>
+    </div>
+  </div>
+
   <!-- MODAL DE ALERTA DE SALDO -->
   <div id="budget-alert-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="theme-card border-2 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
@@ -528,12 +545,15 @@
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
-    // SETUP PWA & ÍCONE EXCLUSIVO DO APLICATIVO
+    // SETUP PWA & INSTALAÇÃO COM ÍCONE PROFISSIONAL
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('btn-install-app').classList.remove('hidden');
+      // Só mostra se NÃO estiver instalado em modo standalone
+      if (!window.matchMedia('(display-mode: standalone)').matches) {
+        document.getElementById('btn-install-app').classList.remove('hidden');
+      }
     });
 
     document.getElementById('btn-install-app')?.addEventListener('click', async () => {
@@ -545,19 +565,39 @@
         }
         deferredPrompt = null;
       } else {
-        alert("Para instalar, toque nos 3 pontinhos no canto superior direito do seu navegador e selecione 'Instalar aplicativo' ou 'Adicionar à tela inicial'.");
+        // Se o navegador barrar o prompt direto, abre o guia explicativo amigável
+        document.getElementById('install-guide-modal').classList.remove('hidden');
       }
     });
 
+    document.getElementById('btn-close-install-guide')?.addEventListener('click', () => {
+      document.getElementById('install-guide-modal').classList.add('hidden');
+    });
+
+    // Se já estiver rodando instalado, oculta o botão automaticamente
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+      window.addEventListener('DOMContentLoaded', () => {
+        const btnInstall = document.getElementById('btn-install-app');
+        if (btnInstall) btnInstall.classList.add('hidden');
+      });
+    } else {
+      window.addEventListener('DOMContentLoaded', () => {
+        const btnInstall = document.getElementById('btn-install-app');
+        if (btnInstall) btnInstall.classList.remove('hidden');
+      });
+    }
+
     function setupPWA() {
-      // Ícone vetorizado exclusivo de Mercado (Carrinho de compras estilizado em alta definição)
+      // Novo ícone premium estilizado (Carrinho de compras moderno com emblema esmeralda)
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-        <rect width="512" height="512" rx="112" fill="#020617"/>
-        <circle cx="256" cy="256" r="192" fill="#10b981" fill-opacity="0.2"/>
-        <path d="M140 180h232l-24 140H164l-24-140z" fill="#10b981"/>
-        <path d="M180 120h152v60H180z" fill="#34d399"/>
-        <circle cx="200" cy="380" r="28" fill="#f8fafc"/>
-        <circle cx="312" cy="380" r="28" fill="#f8fafc"/>
+        <rect width="512" height="512" rx="120" fill="#020617"/>
+        <circle cx="256" cy="256" r="180" fill="#10b981" fill-opacity="0.18"/>
+        <path d="M136 176h240l-28 152H164l-28-152z" fill="#10b981"/>
+        <path d="M176 116h160v60H176z" fill="#34d399" rx="8"/>
+        <circle cx="204" cy="384" r="30" fill="#f8fafc"/>
+        <circle cx="308" cy="384" r="30" fill="#f8fafc"/>
+        <circle cx="204" cy="384" r="12" fill="#020617"/>
+        <circle cx="308" cy="384" r="12" fill="#020617"/>
       </svg>`;
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
       const manifestData = {
