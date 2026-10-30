@@ -6,10 +6,10 @@
   <title>Meu Mercado 2.0</title>
   
   <!-- Configurações PWA e Theme -->
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#0284c7">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Mercado 2.0">
+  <meta name="apple-mobile-web-app-title" content="Meu Mercado 2.0">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -44,7 +44,6 @@
   <link rel="manifest" id="manifest-placeholder">
 
   <style>
-    /* DEFINIÇÕES DOS TEMAS VISUAIS */
     :root[data-theme="light"] {
       --bg-page: #f8fafc;
       --bg-card: #ffffff;
@@ -121,20 +120,11 @@
       transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
-    .theme-text-muted {
-      color: var(--text-muted);
-    }
+    .theme-text-muted { color: var(--text-muted); }
 
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg-page);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--bg-card-border);
-      border-radius: 4px;
-    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-page); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-card-border); border-radius: 4px; }
     .theme-accent { color: var(--brand-main); }
     .theme-bg-accent { background-color: var(--brand-main); }
     .theme-border-accent { border-color: var(--brand-main); }
@@ -143,7 +133,7 @@
 <body data-theme="emerald" class="h-screen w-screen overflow-hidden font-sans antialiased">
 
   <!-- ================================================================= -->
-  <!-- TELA DE AUTENTICAÇÃO (LOGIN / CADASTRO)                           -->
+  <!-- TELA DE AUTENTICAÇÃO                                             -->
   <!-- ================================================================= -->
   <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: var(--bg-page);">
     <div class="theme-card border w-full max-w-md rounded-2xl p-6 shadow-2xl relative">
@@ -189,11 +179,11 @@
   <!-- ================================================================= -->
   <div id="main-app" class="hidden h-screen w-screen flex flex-col overflow-hidden">
 
-    <!-- BANNER PWA -->
+    <!-- BANNER PWA DE INSTALAÇÃO NATIVA -->
     <div id="pwa-install-banner" class="hidden theme-bg-accent text-white px-4 py-2.5 flex items-center justify-between text-xs font-medium z-30 shadow-lg shrink-0">
       <div class="flex items-center gap-2">
         <i data-lucide="download" class="w-4 h-4"></i>
-        <span>Instale o App na sua tela inicial!</span>
+        <span>Instalar aplicativo nos seus apps!</span>
       </div>
       <div class="flex items-center gap-2">
         <button id="btn-install-pwa" class="bg-black/80 text-white px-3 py-1 rounded-lg text-xs font-bold transition-colors">Instalar</button>
@@ -219,7 +209,6 @@
         </div>
       </div>
 
-      <!-- VALORES DO MERCADO -->
       <div class="border-t py-2 px-4" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
         <div class="max-w-md mx-auto grid grid-cols-2 gap-2.5">
           <div class="theme-card border rounded-xl p-2 flex flex-col">
@@ -235,10 +224,9 @@
       </div>
     </header>
 
-    <!-- ÁREA PRINCIPAL (FIXA) -->
+    <!-- ÁREA PRINCIPAL -->
     <main class="flex-1 max-w-md mx-auto w-full p-3 flex flex-col gap-3 overflow-hidden">
       
-      <!-- FORMULÁRIO DE ENTRADA (FIXO) -->
       <form id="add-item-form" class="theme-card border rounded-2xl p-3 shadow-md space-y-2 shrink-0">
         <div>
           <input type="text" id="item-name" placeholder="Nome do item (opcional)" 
@@ -270,7 +258,6 @@
         </button>
       </form>
 
-      <!-- CARRINHO ATUAL (COM ROLAGEM DENTRO DA TELA) -->
       <div class="flex-1 theme-card border rounded-2xl p-3 shadow-md flex flex-col min-h-0 overflow-hidden">
         <div class="flex items-center justify-between pb-2 border-b shrink-0" style="border-color: var(--bg-card-border);">
           <div class="flex items-center gap-1.5">
@@ -280,10 +267,8 @@
           <span id="items-count-badge" class="text-[10px] theme-text-muted font-semibold px-2 py-0.5 rounded-full border" style="border-color: var(--bg-card-border);">0 itens</span>
         </div>
 
-        <!-- ROLAGEM APENAS NO CARRINHO -->
         <div id="cart-list" class="flex-1 overflow-y-auto py-2 space-y-2 pr-1"></div>
 
-        <!-- BOTÃO FINALIZAR -->
         <div class="pt-2 border-t shrink-0" style="border-color: var(--bg-card-border);">
           <button id="btn-finish-shopping" class="w-full border font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-xs" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
             <i data-lucide="check-circle" class="w-4 h-4 theme-accent"></i>
@@ -295,7 +280,7 @@
     </main>
   </div>
 
-  <!-- MENU GAVETA LATERAL -->
+  <!-- MENU GAVETA -->
   <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
   
   <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[80vw] theme-card border-r z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
@@ -315,7 +300,6 @@
     </div>
 
     <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
-      <!-- OPÇÕES DE TEMAS (INCLUINDO O CLARO/BRANCO) -->
       <div>
         <h4 class="text-xs font-semibold theme-text-muted uppercase tracking-wider mb-3">Estilo Visual / Tema</h4>
         <div class="grid grid-cols-5 gap-1.5">
@@ -370,7 +354,7 @@
     </div>
   </aside>
 
-  <!-- MODAIS -->
+  <!-- MODAL -->
   <div id="confirm-finish-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="theme-card border w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center space-y-4">
       <div class="w-12 h-12 rounded-full flex items-center justify-center theme-accent mx-auto" style="background: var(--brand-bg); border: 1px solid var(--brand-border);">
@@ -420,6 +404,7 @@
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
+    // CONFIGURAÇÃO PWA CORRIGIDA PARA GAVETA DE APLICATIVOS
     function setupPWA() {
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
         <rect width="512" height="512" rx="128" fill="#0284c7"/>
@@ -434,11 +419,18 @@
       const manifestData = {
         name: "Meu Mercado 2.0",
         short_name: "Mercado 2.0",
+        description: "Calculadora de compras para supermercado sincronizada em tempo real.",
         start_url: "./",
+        scope: "./",
         display: "standalone",
-        background_color: "#f8fafc",
+        orientation: "portrait",
+        background_color: "#020617",
         theme_color: "#0284c7",
-        icons: [{ src: iconUrl, sizes: "192x192 512x512", type: "image/svg+xml" }]
+        categories: ["shopping", "finance", "productivity"],
+        icons: [
+          { src: iconUrl, sizes: "192x192", type: "image/svg+xml" },
+          { src: iconUrl, sizes: "512x512", type: "image/svg+xml" }
+        ]
       };
 
       const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
@@ -446,9 +438,12 @@
 
       if ('serviceWorker' in navigator) {
         const swCode = `
+          const CACHE_NAME = 'mercado-v2-cache';
           self.addEventListener('install', e => self.skipWaiting());
           self.addEventListener('activate', e => e.waitUntil(clients.claim()));
-          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+          self.addEventListener('fetch', e => {
+            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+          });
         `;
         const swBlob = new Blob([swCode], { type: 'text/javascript' });
         navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
@@ -465,8 +460,11 @@
     document.getElementById('btn-install-pwa')?.addEventListener('click', async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('pwa-install-banner').classList.add('hidden');
+        }
         deferredPrompt = null;
-        document.getElementById('pwa-install-banner').classList.add('hidden');
       }
     });
 
@@ -728,6 +726,7 @@
       document.getElementById('confirm-finish-modal').classList.add('hidden');
     });
 
+    // Iniciar PWA
     setupPWA();
   </script>
 </body>
