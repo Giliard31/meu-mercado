@@ -226,10 +226,10 @@
             </div>
           </div>
 
-          <!-- BOTÃO DE INSTALAÇÃO NATIVA (SÓ APARECE SE NÃO ESTIVER INSTALADO) -->
-          <button id="btn-install-app" class="hidden w-full theme-bg-accent text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs shadow-md transition-all active:scale-[0.98]">
-            <i data-lucide="download-cloud" class="w-4 h-4"></i>
-            <span>Instalar Aplicativo no Celular</span>
+          <!-- BOTÃO DE INSTALAÇÃO NATIVA (FORÇADO A APARECER) -->
+          <button id="btn-install-app" class="w-full theme-bg-accent text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-xs shadow-lg transition-all active:scale-[0.98] animate-pulse">
+            <i data-lucide="download-cloud" class="w-5 h-5"></i>
+            <span>Instalar Aplicativo Oficial no Celular</span>
           </button>
         </div>
       </div>
@@ -528,15 +528,12 @@
     }
     setTheme(localStorage.getItem('selected_theme') || 'emerald');
 
-    // SETUP PWA & INSTALAÇÃO NATIVA INTELIGENTE
+    // SETUP PWA & ÍCONE EXCLUSIVO DO APLICATIVO
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      // Se não estiver em modo standalone (já instalado), mostra o botão de instalar no topo
-      if (!window.matchMedia('(display-mode: standalone)').matches) {
-        document.getElementById('btn-install-app').classList.remove('hidden');
-      }
+      document.getElementById('btn-install-app').classList.remove('hidden');
     });
 
     document.getElementById('btn-install-app')?.addEventListener('click', async () => {
@@ -547,16 +544,20 @@
           document.getElementById('btn-install-app').classList.add('hidden');
         }
         deferredPrompt = null;
+      } else {
+        alert("Para instalar, toque nos 3 pontinhos no canto superior direito do seu navegador e selecione 'Instalar aplicativo' ou 'Adicionar à tela inicial'.");
       }
     });
 
     function setupPWA() {
+      // Ícone vetorizado exclusivo de Mercado (Carrinho de compras estilizado em alta definição)
       const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-        <rect width="512" height="512" rx="128" fill="#0284c7"/>
-        <path d="M160 128h192l32 160H128l32-160z" fill="#ffffff"/>
-        <path d="M128 288h256l-24 112H152l-24-112z" fill="#e2e8f0"/>
-        <circle cx="176" cy="432" r="32" fill="#38bdf8"/>
-        <circle cx="336" cy="432" r="32" fill="#38bdf8"/>
+        <rect width="512" height="512" rx="112" fill="#020617"/>
+        <circle cx="256" cy="256" r="192" fill="#10b981" fill-opacity="0.2"/>
+        <path d="M140 180h232l-24 140H164l-24-140z" fill="#10b981"/>
+        <path d="M180 120h152v60H180z" fill="#34d399"/>
+        <circle cx="200" cy="380" r="28" fill="#f8fafc"/>
+        <circle cx="312" cy="380" r="28" fill="#f8fafc"/>
       </svg>`;
       const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
       const manifestData = {
@@ -567,8 +568,8 @@
         display: "standalone",
         orientation: "portrait",
         background_color: "#020617",
-        theme_color: "#0284c7",
-        icons: [{ src: iconUrl, sizes: "192x192 512x512", type: "image/svg+xml" }]
+        theme_color: "#10b981",
+        icons: [{ src: iconUrl, sizes: "192x192 512x512", type: "image/svg+xml", purpose: "any maskable" }]
       };
       const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
       document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
