@@ -116,7 +116,6 @@
     .theme-card {
       background-color: var(--bg-card);
       border-color: var(--bg-card-border);
-      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .theme-text-muted { color: var(--text-muted); }
@@ -295,9 +294,7 @@
 
     </main>
 
-    <!-- ================================================================= -->
-    <!-- BOTÃO FLUTUANTE DO CHAT COM NOTIFICAÇÃO                            -->
-    <!-- ================================================================= -->
+    <!-- BOTÃO FLUTUANTE DO CHAT -->
     <div class="absolute bottom-4 right-4 z-30">
       <button id="btn-open-chat" class="relative theme-bg-accent text-white p-3.5 rounded-2xl shadow-xl flex items-center justify-center active:scale-95 transition-transform">
         <i data-lucide="message-square" class="w-6 h-6"></i>
@@ -305,13 +302,10 @@
       </button>
     </div>
 
-    <!-- ================================================================= -->
-    <!-- MODAL DO CHAT EM TEMPO REAL                                       -->
-    <!-- ================================================================= -->
+    <!-- MODAL DO CHAT -->
     <div id="chat-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4 hidden">
-      <div class="theme-card border-2 w-full sm:max-w-md h-[80vh] sm:h-[600px] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+      <div class="theme-card border-2 w-full sm:max-w-md h-[80vh] sm:h-[600px] rounded-t-3xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         
-        <!-- Cabeçalho do Chat -->
         <div class="p-4 border-b-2 flex items-center justify-between shrink-0" style="border-color: var(--bg-card-border);">
           <div class="flex items-center gap-2.5">
             <div class="p-2 rounded-xl theme-accent" style="background: var(--brand-bg);">
@@ -327,10 +321,8 @@
           </button>
         </div>
 
-        <!-- Lista de Mensagens -->
         <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3" style="background-color: var(--bg-page);"></div>
 
-        <!-- Caixa de Envio -->
         <form id="chat-form" class="p-3 border-t-2 flex items-center gap-2 shrink-0" style="border-color: var(--bg-card-border);">
           <input type="text" id="chat-input" placeholder="Digite sua mensagem..." autocomplete="off"
             class="flex-1 border-2 rounded-xl px-3.5 py-2.5 text-xs placeholder-slate-400 focus:outline-none theme-border-accent" style="background-color: var(--bg-page); border-color: var(--bg-card-border); color: var(--text-main);">
@@ -344,9 +336,7 @@
 
   </div>
 
-  <!-- ================================================================= -->
-  <!-- MENU GAVETA                                                      -->
-  <!-- ================================================================= -->
+  <!-- MENU GAVETA -->
   <div id="drawer-backdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0"></div>
   
   <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] theme-card border-r-2 z-40 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
@@ -367,7 +357,7 @@
 
     <div class="flex flex-col flex-1 overflow-y-auto p-4 space-y-6">
       
-      <!-- PAINEL DE ADMINISTRAÇÃO (APENAS PARA O DONO) -->
+      <!-- PAINEL ADMIN -->
       <div id="admin-panel" class="hidden border-2 rounded-2xl p-3.5 theme-card shadow-sm space-y-3">
         <div class="flex items-center gap-2">
           <i data-lucide="shield-alert" class="w-4 h-4 text-amber-500"></i>
@@ -431,9 +421,7 @@
     </div>
   </aside>
 
-  <!-- ================================================================= -->
-  <!-- MODAL DE DETALHES DO HISTÓRICO (LISTA COMPLETA DA COMPRA)        -->
-  <!-- ================================================================= -->
+  <!-- MODAL DETALHES HISTÓRICO -->
   <div id="history-detail-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="theme-card border-2 w-full max-w-md max-h-[85vh] rounded-2xl p-5 shadow-2xl flex flex-col overflow-hidden">
       <div class="flex items-center justify-between pb-3 border-b-2 shrink-0" style="border-color: var(--bg-card-border);">
@@ -472,7 +460,7 @@
     </div>
   </div>
 
-  <!-- SCRIPT COMPLETO -->
+  <!-- SCRIPT -->
   <script>
     lucide.createIcons();
 
@@ -500,11 +488,10 @@
       budget: null,
       items: [],
       history: [],
-      chat: [],
-      pendingUsers: []
+      chat: []
     };
 
-    const ADMIN_EMAIL = "giliardmartins87@gmail.com"; // Defina seu e-mail como Administrador Principal
+    const ADMIN_EMAIL = "giliardmartins87@gmail.com";
 
     function setTheme(themeName) {
       document.documentElement.setAttribute('data-theme', themeName);
@@ -536,8 +523,9 @@
       document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
 
       if ('serviceWorker' in navigator) {
-        const swCode = `self.addEventListener('install', e => self.skipWaiting()); self.addEventListener('activate', e => e.waitUntil(clients.claim()));`;
-        navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'text/javascript' }))).catch(() => {});
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          for(let reg of registrations) reg.unregister();
+        });
       }
     }
 
@@ -559,7 +547,6 @@
       document.getElementById('pwa-install-banner').classList.add('hidden');
     });
 
-    // AUTENTICAÇÃO
     let authMode = 'login';
     const tabLogin = document.getElementById('tab-login');
     const tabRegister = document.getElementById('tab-register');
@@ -590,7 +577,6 @@
           await auth.signInWithEmailAndPassword(email, password);
         } else {
           const cred = await auth.createUserWithEmailAndPassword(email, password);
-          // Registrar solicitação de aprovação pendente no Firestore
           await db.collection("aprovacoes").doc(cred.user.uid).set({
             email: email,
             approved: email.toLowerCase() === ADMIN_EMAIL.toLowerCase(),
@@ -614,7 +600,6 @@
       currentUser = user;
 
       if (user) {
-        // Verificar se foi aprovado
         const approvalDoc = await db.collection("aprovacoes").doc(user.uid).get();
         let isApproved = false;
 
@@ -639,7 +624,6 @@
         document.getElementById('main-app').classList.remove('hidden');
         document.getElementById('user-display-email').innerText = user.email.split('@')[0];
 
-        // Se for admin, mostrar painel
         if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
           document.getElementById('admin-panel').classList.remove('hidden');
           initAdminListener();
@@ -655,7 +639,6 @@
       }
     });
 
-    // ADMIN: OUVIR NOVOS USUÁRIOS PENDENTES
     function initAdminListener() {
       unsubscribeAdmin = db.collection("aprovacoes").where("approved", "==", false).onSnapshot((snapshot) => {
         const listEl = document.getElementById('pending-users-list');
@@ -706,7 +689,6 @@
       }, { merge: true });
     }
 
-    // CHAT EM TEMPO REAL COM STATUS DE LEITURA (DOIS CHECKS)
     function initChatSync() {
       const chatRef = db.collection("chat_mercado").orderBy("createdAt", "asc");
       unsubscribeChat = chatRef.onSnapshot((snapshot) => {
@@ -754,13 +736,11 @@
         const isMe = currentUser && msg.senderEmail === currentUser.email;
         if (!isMe && !msg.read) unreadCount++;
 
-        // Marca como lida se a mensagem não for minha e estiver aberta no chat modal
         if (!isMe && !msg.read && !document.getElementById('chat-modal').classList.contains('hidden')) {
           db.collection("chat_mercado").doc(msg.id).update({ read: true });
         }
 
-        // Ícone de Dois Checks do WhatsApp Colorido se lido
-        const checkColor = msg.read ? "text-cyan-400" : "text-slate-400";
+        const checkColor = msg.read ? "text-cyan-400 font-black" : "text-slate-400 font-bold";
         const checksHtml = isMe ? `<span class="inline-flex ml-1 ${checkColor}" title="${msg.read ? 'Visualizado' : 'Enviado'}">✓✓</span>` : '';
         const deleteBtn = isMe ? `<button onclick="deleteChatMessage('${msg.id}')" class="text-rose-400 hover:text-rose-500 ml-1 text-[10px]" title="Excluir"><i data-lucide="trash-2" class="w-3 h-3 inline"></i></button>` : '';
 
@@ -769,7 +749,7 @@
             <span class="text-[9px] theme-text-muted font-bold mb-0.5 px-1">${msg.sender}</span>
             <div class="max-w-[80%] rounded-2xl px-3.5 py-2 text-xs shadow-sm border ${isMe ? 'theme-bg-accent text-white border-transparent' : 'theme-card border'}">
               <p class="break-words">${msg.text}</p>
-              <div class="flex items-center justify-end gap-1 mt-1 text-[9px] opacity-80">
+              <div class="flex items-center justify-end gap-1 mt-1 text-[9px] opacity-90">
                 <span>${msg.createdAt ? new Date(msg.createdAt.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
                 ${checksHtml}
                 ${deleteBtn}
@@ -790,11 +770,9 @@
       lucide.createIcons();
     }
 
-    // ABRIR / FECHAR CHAT
     const chatModal = document.getElementById('chat-modal');
     document.getElementById('btn-open-chat').addEventListener('click', () => {
       chatModal.classList.remove('hidden');
-      // Marcar mensagens como lidas ao abrir
       appState.chat.forEach(msg => {
         if (currentUser && msg.senderEmail !== currentUser.email && !msg.read) {
           db.collection("chat_mercado").doc(msg.id).update({ read: true });
@@ -804,7 +782,6 @@
     });
     document.getElementById('btn-close-chat').addEventListener('click', () => chatModal.classList.add('hidden'));
 
-    // CÁLCULOS E UI
     function calculateTotals() {
       const totalGasto = appState.items.reduce((acc, item) => acc + (item.price * item.qty), 0);
       let saldo = appState.budget !== null ? appState.budget - totalGasto : null;
@@ -863,11 +840,12 @@
       } else {
         historyList.innerHTML = appState.history.slice().reverse().map((h, revIdx) => {
           const realIdx = appState.history.length - 1 - revIdx;
+          const itemCount = h.items ? h.items.length : 0;
           return `
             <div onclick="openHistoryDetail(${realIdx})" class="border-2 rounded-xl p-3 flex items-center justify-between shadow-sm cursor-pointer hover:border-sky-500 transition-colors" style="background-color: var(--bg-page); border-color: var(--bg-card-border);">
               <div>
                 <p class="text-xs font-bold">${h.date}</p>
-                <p class="text-[10px] theme-text-muted font-semibold">${h.items.length} ${h.items.length === 1 ? 'item' : 'itens'} (Ver lista)</p>
+                <p class="text-[10px] theme-text-muted font-semibold">${itemCount} ${itemCount === 1 ? 'item' : 'itens'} (Ver lista)</p>
               </div>
               <span class="text-xs font-black theme-accent">${formatCurrency(h.total)}</span>
             </div>
@@ -878,10 +856,9 @@
       lucide.createIcons();
     }
 
-    // VISUALIZAR DETALHES DA LISTA NO HISTÓRICO
     window.openHistoryDetail = function(index) {
       const h = appState.history[index];
-      if (!h) return;
+      if (!h || !h.items) return;
 
       document.getElementById('history-detail-title').innerText = `Compra em ${h.date}`;
       document.getElementById('history-detail-total').innerText = formatCurrency(h.total);
@@ -969,7 +946,6 @@
       }
     });
 
-    // FINALIZAR E GUARDAR LISTA COMPLETA NO HISTÓRICO
     document.getElementById('btn-finish-shopping').addEventListener('click', () => {
       if (appState.items.length === 0) return;
       document.getElementById('confirm-finish-modal').classList.remove('hidden');
@@ -986,7 +962,7 @@
           id: Date.now().toString(),
           date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
           total: totalGasto,
-          items: [...appState.items] // Salva todos os itens da compra
+          items: [...appState.items]
         });
         appState.items = [];
         saveToFirestore();
